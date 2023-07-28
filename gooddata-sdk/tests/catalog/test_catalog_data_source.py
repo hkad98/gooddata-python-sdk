@@ -68,9 +68,13 @@ def test_register_upload_notification(test_config):
 def test_generate_logical_model(test_config: dict):
     sdk = GoodDataSdk.create(host_=test_config["host"], token_=test_config["token"])
     declarative_model = sdk.catalog_workspace_content.get_declarative_ldm(test_config["workspace"])
-    generated_declarative_model = sdk.catalog_data_source.generate_logical_model(test_config["data_source"])
+    ldm_request = CatalogGenerateLdmRequest(separator="__", wdf_prefix="wdf", workspace_id=test_config["workspace"])
+    generated_declarative_model = sdk.catalog_data_source.generate_logical_model(
+        test_config["data_source"], ldm_request
+    )
 
     # NOTE: remove after implementation of PDM removal
+    # NOTE: it seems that PDM did not have affect
     order_lines_dataset = [dataset for dataset in declarative_model.ldm.datasets if dataset.id == "order_lines"]
     assert len(order_lines_dataset) == 1
 
@@ -136,6 +140,7 @@ def test_generate_logical_model_with_sql_datasets(test_config: dict):
     with open(expected_json_path, "rt") as f:
         expected_ldm = CatalogDeclarativeModel.from_dict(json.load(f))
 
+    # TODO: test generate ldm with workspace_id
     assert expected_ldm.ldm.datasets == generated_declarative_model.ldm.datasets
     assert len(expected_ldm.ldm.date_instances) == len(generated_declarative_model.ldm.date_instances)
 

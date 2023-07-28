@@ -48,6 +48,7 @@ class CatalogGenerateLdmRequest(Base):
     denorm_prefix: Optional[str] = None
     wdf_prefix: Optional[str] = None
     pdm: Optional[CatalogPdmLdmRequest] = None
+    workspace_id: Optional[str] = None
 
     @staticmethod
     def client_class() -> Type[GenerateLdmRequest]:

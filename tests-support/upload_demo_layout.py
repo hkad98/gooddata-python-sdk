@@ -107,7 +107,7 @@ def update_layout():
     user["data"]["attributes"]["authenticationId"] = response["authenticationId"]
     create_entity(user["data"]["id"], user, "user", f"api/{api_version}/entities/users", rest_op_jsonapi)
 
-    print("Uploading test DS with physical model for demo", flush=True)
+    print("Uploading test DS for demo", flush=True)
     rest_op_default("put", f"api/{api_version}/layout/dataSources", data_sources)
 
     print("Uploading demo workspaces", flush=True)

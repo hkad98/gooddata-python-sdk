@@ -156,7 +156,7 @@ interactions:
             to access it.
           status: 404
           title: Not Found
-          traceId: 38b0b8e1fd159ca7
+          traceId: 1f4222497b41bb64
   - request:
       method: POST
       uri: http://localhost:3000/api/v1/entities/workspaces/demo/userDataFilters
@@ -282,7 +282,7 @@ interactions:
         Connection:
           - keep-alive
         Content-Length:
-          - '1201'
+          - '1233'
         Content-Security-Policy:
           - 'default-src ''self'' *.wistia.com *.wistia.net; script-src ''self'' ''unsafe-inline''
             ''unsafe-eval'' *.wistia.com *.wistia.net *.hsforms.net *.hsforms.com
@@ -360,6 +360,7 @@ interactions:
                   - Order lines
                 primary: true
                 sourceColumn: order_status
+                sourceColumnDataType: STRING
                 valueType: TEXT
               links:
                 self: http://localhost:3000/api/v1/entities/workspaces/demo/labels/order_status
@@ -399,7 +400,7 @@ interactions:
         Connection:
           - keep-alive
         Content-Length:
-          - '987'
+          - '1019'
         Content-Security-Policy:
           - 'default-src ''self'' *.wistia.com *.wistia.net; script-src ''self'' ''unsafe-inline''
             ''unsafe-eval'' *.wistia.com *.wistia.net *.hsforms.net *.hsforms.com
@@ -481,6 +482,7 @@ interactions:
                   - Order lines
                 primary: true
                 sourceColumn: order_status
+                sourceColumnDataType: STRING
                 valueType: TEXT
               links:
                 self: http://localhost:3000/api/v1/entities/workspaces/demo/labels/order_status

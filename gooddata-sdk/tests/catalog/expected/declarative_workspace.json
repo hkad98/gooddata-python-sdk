@@ -1,5 +1,6 @@
 {
   "analytics": {
+    "analyticalDashboardExtensions": [],
     "analyticalDashboards": [
       {
         "content": {
@@ -2250,6 +2251,7 @@
             "id": "campaign_channel_id",
             "labels": [],
             "sourceColumn": "campaign_channel_id",
+            "sourceColumnDataType": "STRING",
             "tags": [
               "Campaign channels"
             ],
@@ -2260,6 +2262,7 @@
             "id": "campaign_channels.category",
             "labels": [],
             "sourceColumn": "category",
+            "sourceColumnDataType": "STRING",
             "tags": [
               "Campaign channels"
             ],
@@ -2270,6 +2273,7 @@
             "id": "type",
             "labels": [],
             "sourceColumn": "type",
+            "sourceColumnDataType": "STRING",
             "tags": [
               "Campaign channels"
             ],
@@ -2279,6 +2283,10 @@
         "dataSourceTableId": {
           "dataSourceId": "demo-test-ds",
           "id": "campaign_channels",
+          "path": [
+            "demo",
+            "campaign_channels"
+          ],
           "type": "dataSource"
         },
         "description": "Campaign channels",
@@ -2287,6 +2295,7 @@
             "description": "Budget",
             "id": "budget",
             "sourceColumn": "budget",
+            "sourceColumnDataType": "NUMERIC",
             "tags": [
               "Campaign channels"
             ],
@@ -2296,6 +2305,7 @@
             "description": "Spend",
             "id": "spend",
             "sourceColumn": "spend",
+            "sourceColumnDataType": "NUMERIC",
             "tags": [
               "Campaign channels"
             ],
@@ -2316,6 +2326,9 @@
               "type": "dataset"
             },
             "multivalue": false,
+            "sourceColumnDataTypes": [
+              "INT"
+            ],
             "sourceColumns": [
               "campaign_id"
             ]
@@ -2333,6 +2346,7 @@
             "id": "campaign_id",
             "labels": [],
             "sourceColumn": "campaign_id",
+            "sourceColumnDataType": "INT",
             "tags": [
               "Campaigns"
             ],
@@ -2343,6 +2357,7 @@
             "id": "campaign_name",
             "labels": [],
             "sourceColumn": "campaign_name",
+            "sourceColumnDataType": "STRING",
             "tags": [
               "Campaigns"
             ],
@@ -2352,6 +2367,10 @@
         "dataSourceTableId": {
           "dataSourceId": "demo-test-ds",
           "id": "campaigns",
+          "path": [
+            "demo",
+            "campaigns"
+          ],
           "type": "dataSource"
         },
         "description": "Campaigns",
@@ -2376,6 +2395,7 @@
             "id": "customer_id",
             "labels": [],
             "sourceColumn": "customer_id",
+            "sourceColumnDataType": "INT",
             "tags": [
               "Customers"
             ],
@@ -2386,6 +2406,7 @@
             "id": "customer_name",
             "labels": [],
             "sourceColumn": "customer_name",
+            "sourceColumnDataType": "STRING",
             "tags": [
               "Customers"
             ],
@@ -2396,6 +2417,7 @@
             "id": "region",
             "labels": [],
             "sourceColumn": "region",
+            "sourceColumnDataType": "STRING",
             "tags": [
               "Customers"
             ],
@@ -2409,6 +2431,7 @@
                 "description": "Location",
                 "id": "geo__state__location",
                 "sourceColumn": "geo__state__location",
+                "sourceColumnDataType": "STRING",
                 "tags": [
                   "Customers"
                 ],
@@ -2416,6 +2439,7 @@
               }
             ],
             "sourceColumn": "state",
+            "sourceColumnDataType": "STRING",
             "tags": [
               "Customers"
             ],
@@ -2425,6 +2449,10 @@
         "dataSourceTableId": {
           "dataSourceId": "demo-test-ds",
           "id": "customers",
+          "path": [
+            "demo",
+            "customers"
+          ],
           "type": "dataSource"
         },
         "description": "Customers",
@@ -2449,6 +2477,7 @@
             "id": "order_id",
             "labels": [],
             "sourceColumn": "order_id",
+            "sourceColumnDataType": "STRING",
             "tags": [
               "Order lines"
             ],
@@ -2459,6 +2488,7 @@
             "id": "order_line_id",
             "labels": [],
             "sourceColumn": "order_line_id",
+            "sourceColumnDataType": "STRING",
             "tags": [
               "Order lines"
             ],
@@ -2469,6 +2499,7 @@
             "id": "order_status",
             "labels": [],
             "sourceColumn": "order_status",
+            "sourceColumnDataType": "STRING",
             "tags": [
               "Order lines"
             ],
@@ -2478,6 +2509,10 @@
         "dataSourceTableId": {
           "dataSourceId": "demo-test-ds",
           "id": "order_lines",
+          "path": [
+            "demo",
+            "order_lines"
+          ],
           "type": "dataSource"
         },
         "description": "Order lines",
@@ -2486,6 +2521,7 @@
             "description": "Price",
             "id": "price",
             "sourceColumn": "price",
+            "sourceColumnDataType": "NUMERIC",
             "tags": [
               "Order lines"
             ],
@@ -2495,6 +2531,7 @@
             "description": "Quantity",
             "id": "quantity",
             "sourceColumn": "quantity",
+            "sourceColumnDataType": "NUMERIC",
             "tags": [
               "Order lines"
             ],
@@ -2515,6 +2552,9 @@
               "type": "dataset"
             },
             "multivalue": false,
+            "sourceColumnDataTypes": [
+              "INT"
+            ],
             "sourceColumns": [
               "campaign_id"
             ]
@@ -2525,6 +2565,9 @@
               "type": "dataset"
             },
             "multivalue": false,
+            "sourceColumnDataTypes": [
+              "INT"
+            ],
             "sourceColumns": [
               "customer_id"
             ]
@@ -2535,6 +2578,9 @@
               "type": "dataset"
             },
             "multivalue": false,
+            "sourceColumnDataTypes": [
+              "DATE"
+            ],
             "sourceColumns": [
               "date"
             ]
@@ -2545,6 +2591,9 @@
               "type": "dataset"
             },
             "multivalue": false,
+            "sourceColumnDataTypes": [
+              "INT"
+            ],
             "sourceColumns": [
               "product_id"
             ]
@@ -2553,7 +2602,17 @@
         "tags": [
           "Order lines"
         ],
-        "title": "Order lines"
+        "title": "Order lines",
+        "workspaceDataFilterReferences": [
+          {
+            "filterColumn": "wdf__region",
+            "filterColumnDataType": "STRING",
+            "filterId": {
+              "id": "wdf__region",
+              "type": "workspaceDataFilter"
+            }
+          }
+        ]
       },
       {
         "attributes": [
@@ -2562,6 +2621,7 @@
             "id": "product_id",
             "labels": [],
             "sourceColumn": "product_id",
+            "sourceColumnDataType": "INT",
             "tags": [
               "Products"
             ],
@@ -2572,6 +2632,7 @@
             "id": "product_name",
             "labels": [],
             "sourceColumn": "product_name",
+            "sourceColumnDataType": "STRING",
             "tags": [
               "Products"
             ],
@@ -2582,6 +2643,7 @@
             "id": "products.category",
             "labels": [],
             "sourceColumn": "category",
+            "sourceColumnDataType": "STRING",
             "tags": [
               "Products"
             ],
@@ -2591,6 +2653,10 @@
         "dataSourceTableId": {
           "dataSourceId": "demo-test-ds",
           "id": "products",
+          "path": [
+            "demo",
+            "products"
+          ],
           "type": "dataSource"
         },
         "description": "Products",
