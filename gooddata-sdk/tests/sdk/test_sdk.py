@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any
+from typing import Any, Union
 
 import yaml
 
@@ -10,10 +10,11 @@ from gooddata_sdk import GoodDataSdk
 
 _current_dir = Path(__file__).parent.absolute()
 PROFILES_PATH = _current_dir / "profiles" / "profiles.yaml"
+PROFILES_AAC_PATH = _current_dir / "profiles_aac" / "profiles.yaml"
 
 
-def load_profiles_content() -> dict:
-    with open(PROFILES_PATH, "r", encoding="utf-8") as f:
+def load_profiles_content(profiles_path: Union[str, Path] = PROFILES_PATH) -> dict:
+    with open(profiles_path, "r", encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
@@ -82,3 +83,11 @@ def test_correct_4_profile():
     data = load_profiles_content()
 
     are_same_check(data[profile], sdk)
+
+
+def test_aac_config(setenvvar):
+    sdk = GoodDataSdk.create_from_aac_profile(profiles_path=PROFILES_AAC_PATH)
+    data = load_profiles_content(profiles_path=PROFILES_AAC_PATH)
+
+    assert data["profiles"]["dev"]["host"] == sdk.client._hostname
+    assert "123" == sdk.client._token

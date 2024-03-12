@@ -1,0 +1,7 @@
+# (C) 2024 GoodData Corporation
+profiles:
+  dev:
+    host: http://abc:3000
+    token: $GOODDATA_API_TOKEN
+
+default_profile: dev

@@ -1,5 +1,7 @@
 # (C) 2022 GoodData Corporation
+import os
 from pathlib import Path
+from unittest import mock
 
 import pytest
 import yaml
@@ -22,3 +24,14 @@ def test_config(request):
         config = yaml.safe_load(f)
 
     return config
+
+
+@pytest.fixture()
+def setenvvar(monkeypatch):
+    with mock.patch.dict(os.environ, clear=True):
+        envvars = {
+            "GOODDATA_API_TOKEN": "123",
+        }
+        for k, v in envvars.items():
+            monkeypatch.setenv(k, v)
+        yield  # This is the magical bit which restore the environment after

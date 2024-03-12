@@ -7,7 +7,7 @@ import re
 from collections.abc import KeysView
 from pathlib import Path
 from shutil import rmtree
-from typing import Any, Callable, Dict, List, NamedTuple, Tuple, Union, cast, no_type_check
+from typing import Any, Callable, Dict, List, NamedTuple, Optional, Tuple, Union, cast, no_type_check
 
 import yaml
 
@@ -21,7 +21,8 @@ IdObjType = Union[str, ObjId, Dict[str, Dict[str, str]], Dict[str, str]]
 PROFILES_FILE = "profiles.yaml"
 PROFILES_DIRECTORY = ".gooddata"
 PROFILES_FILE_PATH = Path.home() / PROFILES_DIRECTORY / PROFILES_FILE
-SDK_PROFILE_MANDATORY_KEYS = ["host", "token"]
+_TOKEN_KEY = "token"
+SDK_PROFILE_MANDATORY_KEYS = ["host", _TOKEN_KEY]
 SDK_PROFILE_KEYS = SDK_PROFILE_MANDATORY_KEYS + ["custom_headers", "extra_user_agent"]
 
 
@@ -229,11 +230,61 @@ def mandatory_profile_content_check(profile: str, profile_content_keys: KeysView
         raise ValueError(f"Profile {profile} is missing mandatory parameter or parameters {missing_str}.")
 
 
-def profile_content(profile: str = "default", profiles_path: Path = PROFILES_FILE_PATH) -> dict[str, Any]:
+def _get_token(env_var: str, path: Path = PROFILES_FILE_PATH) -> str:
+    """
+    Note: add support for .env file
+    """
+    # remove $ from the beginning
+    env_var = env_var[1:]
+    try:
+        return os.environ[env_var]
+    except KeyError:
+        raise ValueError(f"Environment variable {env_var} is not set.")
+
+
+def profile_content_aac(profiles_path: Path = PROFILES_FILE_PATH, profile_name: Optional[str] = None) -> dict[str, Any]:
     """Get the profile content from a given file.
 
     Args:
-        profile (str, optional):
+        profile_name (str, optional):
+            Profile name. Defaults to "default".
+        profiles_path (Path, optional):
+            File path for the profiles. Defaults to PROFILES_FILE_PATH.
+
+    Raises:
+        ValueError:
+            There is no profile file located for the given path.
+        ValueError:
+            Profile file does not contain the specified profile.
+
+    Returns:
+        dict[str, Any]:
+            Profile content as a dictionary.
+    """
+    mandatory_keys = {"profiles", "default_profile"}
+    if not profiles_path.exists():
+        raise ValueError(f"There is no profiles file located for path {profiles_path}.")
+    content = read_layout_from_file(profiles_path)
+    if content.keys() != mandatory_keys:
+        raise ValueError(f"Wrong profiles file. The file has to contain mandatory keys in the root ({mandatory_keys}).")
+    profile_name = profile_name if profile_name else content["default_profile"]
+    profiles = content["profiles"]
+    if not profiles.get(profile_name):
+        raise ValueError(f"Profiles file does not contain profile {profile_name}.")
+    profile = profiles[profile_name]
+    mandatory_profile_content_check(profile_name, profile.keys())
+    res = {}
+    for key in profile:
+        if key in SDK_PROFILE_KEYS:
+            res[key] = profile[key] if key != _TOKEN_KEY else _get_token(profile[key])
+    return res
+
+
+def profile_content(profile_name: str = "default", profiles_path: Path = PROFILES_FILE_PATH) -> dict[str, Any]:
+    """Get the profile content from a given file.
+
+    Args:
+        profile_name (str, optional):
             Profile name. Defaults to "default".
         profiles_path (Path, optional):
             File path for the profiles. Defaults to PROFILES_FILE_PATH.
@@ -251,10 +302,11 @@ def profile_content(profile: str = "default", profiles_path: Path = PROFILES_FIL
     if not profiles_path.exists():
         raise ValueError(f"There is no profiles file located for path {profiles_path}.")
     content = read_layout_from_file(profiles_path)
-    if not content.get(profile):
-        raise ValueError(f"Profiles file does not contain profile {profile}.")
-    mandatory_profile_content_check(profile, content[profile].keys())
-    return {key: content[profile][key] for key in content[profile] if key in SDK_PROFILE_KEYS}
+    if not content.get(profile_name):
+        raise ValueError(f"Profiles file does not contain profile {profile_name}.")
+    profile = content[profile_name]
+    mandatory_profile_content_check(profile_name, profile.keys())
+    return {key: profile[key] for key in profile if key in SDK_PROFILE_KEYS}
 
 
 def good_pandas_profile_content(

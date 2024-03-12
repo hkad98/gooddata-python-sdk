@@ -16,7 +16,7 @@ from gooddata_sdk.client import GoodDataApiClient
 from gooddata_sdk.compute.service import ComputeService
 from gooddata_sdk.support import SupportService
 from gooddata_sdk.table import TableService
-from gooddata_sdk.utils import PROFILES_FILE_PATH, profile_content
+from gooddata_sdk.utils import PROFILES_FILE_PATH, profile_content, profile_content_aac
 from gooddata_sdk.visualization import InsightService, VisualizationService
 
 
@@ -38,6 +38,27 @@ class GoodDataSdk:
                 Initialized SDK.
         """
         content = profile_content(profile, profiles_path)
+        client = GoodDataApiClient(**content)
+        return cls(client)
+
+    @classmethod
+    def create_from_aac_profile(
+        cls, profiles_path: str | Path = PROFILES_FILE_PATH, profile: Optional[str] = None
+    ) -> GoodDataSdk:
+        """Convenient method to initialize the SDK from config file.
+
+        Args:
+            profile (str, optional):
+                Profile Name. Defaults to None.
+            profiles_path (Path, optional):
+                File path for the profiles. Defaults to PROFILES_FILE_PATH.
+
+        Returns:
+            GoodDataSdk:
+                Initialized SDK.
+        """
+        profiles_path = profiles_path if isinstance(profiles_path, Path) else Path(profiles_path)
+        content = profile_content_aac(profiles_path, profile)
         client = GoodDataApiClient(**content)
         return cls(client)
 
