@@ -230,12 +230,30 @@ def mandatory_profile_content_check(profile: str, profile_content_keys: KeysView
         raise ValueError(f"Profile {profile} is missing mandatory parameter or parameters {missing_str}.")
 
 
-def _get_token(env_var: str, path: Path = PROFILES_FILE_PATH) -> str:
+def _dummy_env_read(env_path: Path) -> dict[str, Any]:
+    """
+    For production the library should be used instead.
+
+    Read file split each line by =, the first is ENV var. The rest "=".join(data[1:]) is value.
+    """
+    if not env_path.exists():
+        return {}
+    with open(env_path, "r") as f:
+        data = f.read().splitlines()
+    return {line.split("=")[0]: "=".join(line.split("=")[1:]) for line in data}
+
+
+def _get_token(env_var: str, path: Path) -> str:
     """
     Note: add support for .env file
     """
-    # remove $ from the beginning
-    env_var = env_var[1:]
+    env_path = path.parent.resolve() / ".env"
+    if env_var.startswith("$"):
+        # remove $ from the beginning
+        env_var = env_var[1:]
+    local_env_vars = _dummy_env_read(env_path)
+    if env_var in local_env_vars:
+        return local_env_vars[env_var]
     try:
         return os.environ[env_var]
     except KeyError:
@@ -276,7 +294,7 @@ def profile_content_aac(profiles_path: Path = PROFILES_FILE_PATH, profile_name: 
     res = {}
     for key in profile:
         if key in SDK_PROFILE_KEYS:
-            res[key] = profile[key] if key != _TOKEN_KEY else _get_token(profile[key])
+            res[key] = profile[key] if key != _TOKEN_KEY else _get_token(profile[key], profiles_path)
     return res
 
 
