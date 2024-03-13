@@ -2,16 +2,29 @@
 from __future__ import annotations
 
 import functools
-from typing import List, Optional
+import json
+import subprocess
+from pathlib import Path
+from typing import List, Optional, Union
+
+from cattrs import structure
 
 from gooddata_api_client.exceptions import NotFoundException
 from gooddata_api_client.model.json_api_csp_directive_in_document import JsonApiCspDirectiveInDocument
 from gooddata_api_client.model.json_api_organization_setting_in_document import JsonApiOrganizationSettingInDocument
 from gooddata_sdk.catalog.catalog_service_base import CatalogServiceBase
+from gooddata_sdk.catalog.data_source.declarative_model.data_source import CatalogDeclarativeDataSources
 from gooddata_sdk.catalog.organization.entity_model.directive import CatalogCspDirective
 from gooddata_sdk.catalog.organization.entity_model.jwk import CatalogJwk, CatalogJwkDocument
 from gooddata_sdk.catalog.organization.entity_model.organization import CatalogOrganizationDocument
 from gooddata_sdk.catalog.organization.entity_model.setting import CatalogOrganizationSetting
+from gooddata_sdk.catalog.user.declarative_model.user import CatalogDeclarativeUsers
+from gooddata_sdk.catalog.user.declarative_model.user_group import CatalogDeclarativeUserGroups
+from gooddata_sdk.catalog.workspace.declarative_model.workspace.workspace import (
+    CatalogDeclarativeWorkspace,
+    CatalogDeclarativeWorkspaceDataFilters,
+    CatalogDeclarativeWorkspaces,
+)
 from gooddata_sdk.client import GoodDataApiClient
 from gooddata_sdk.utils import load_all_entities
 
@@ -318,3 +331,27 @@ class CatalogOrganizationService(CatalogServiceBase):
             self._entities_api.update_entity_csp_directives(csp_directive.id, csp_directive_document)
         except NotFoundException:
             raise ValueError(f"Can not update {csp_directive.id} csp directive. " f"This csp directive does not exist.")
+
+    @staticmethod
+    def load_organization(path: Union[str, Path], aac: bool = True) -> None:
+        path = path if isinstance(path, Path) else Path(path)
+        data_sources = CatalogDeclarativeDataSources.load_from_disk(path)
+        user_groups = CatalogDeclarativeUserGroups.load_from_disk(path)
+        users = CatalogDeclarativeUsers.load_from_disk(path)
+        workspaces_data_filters = CatalogDeclarativeWorkspaceDataFilters.load_from_disk(path)
+
+        # Put everything that is up
+
+        workspaces_folder = CatalogDeclarativeWorkspaces.workspace_data_filters_folder(path)
+        workspace_ids = sorted([p.stem for p in workspaces_folder.iterdir() if p.is_dir()])
+
+        if aac:
+            p = subprocess.Popen(["gd", "stream"], cwd=path, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            output, err = p.communicate()
+            workspaces = structure(json.loads(output.decode())["workspaces"], List[CatalogDeclarativeWorkspace])
+        else:
+            workspaces = [
+                CatalogDeclarativeWorkspace.load_from_disk(workspaces_folder, workspace_id)
+                for workspace_id in workspace_ids
+            ]
+        print(data_sources, user_groups, users, workspaces, workspaces_data_filters)
