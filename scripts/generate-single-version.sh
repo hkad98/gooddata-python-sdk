@@ -40,7 +40,7 @@ echo "Extracting docs from $branch for section $section (src=$src_section)"
 git archive "$branch" "content/en/$src_section" | tar xf - -C "$content_dir/$section" \
     --strip-components=3 "content/en/$src_section"
 
-# Generate API reference if griffe_builder.py (or legacy json_builder.py) exists on the branch
+# Generate API reference if the branch ever had a doc builder (json_builder or griffe_builder)
 GRIFFE_GEN_FILE="$branch:scripts/docs/griffe_builder.py"
 LEGACY_GEN_FILE="$branch:scripts/docs/json_builder.py"
 if git cat-file -e "$GRIFFE_GEN_FILE" 2>/dev/null || git cat-file -e "$LEGACY_GEN_FILE" 2>/dev/null; then
@@ -54,18 +54,14 @@ if git cat-file -e "$GRIFFE_GEN_FILE" 2>/dev/null || git cat-file -e "$LEGACY_GE
         rm -f api_spec.toml
     fi
 
-    # Generate API introspection data — prefer griffe (static analysis, no imports needed)
-    if git cat-file -e "$GRIFFE_GEN_FILE" 2>/dev/null; then
-        echo "Using griffe_builder.py (static analysis)"
-        python3 ../scripts/docs/griffe_builder.py \
-            --search-path ../packages/gooddata-sdk/src \
-            --search-path ../packages/gooddata-pandas/src \
-            --output data.json \
-            gooddata_sdk gooddata_pandas
-    else
-        echo "Falling back to json_builder.py (runtime introspection)"
-        python3 ../scripts/docs/json_builder.py
-    fi
+    # Generate API introspection data using griffe (static analysis, no imports needed).
+    # Always use the current branch's griffe_builder.py — it works on any branch's
+    # source code via --search-path and doesn't require the SDK packages to be installed.
+    python3 ../scripts/docs/griffe_builder.py \
+        --search-path ../packages/gooddata-sdk/src \
+        --search-path ../packages/gooddata-pandas/src \
+        --output data.json \
+        gooddata_sdk gooddata_pandas
 
     # Generate API reference markdown files and export links for method page renderer
     python3 ../scripts/docs/python_ref_builder.py api_spec.toml \
