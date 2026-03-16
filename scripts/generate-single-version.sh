@@ -68,13 +68,13 @@ if git cat-file -e "$GRIFFE_GEN_FILE" 2>/dev/null || git cat-file -e "$LEGACY_GE
         data.json "$section" "$content_dir" \
         --export-links links.json
 
-    # Pre-render method pages with api_ref directives
-    if git cat-file -e "$branch:scripts/docs/method_page_renderer.py" 2>/dev/null; then
-        echo "Pre-rendering method pages for section $section..."
-        python3 ../scripts/docs/method_page_renderer.py \
-            data.json "$content_dir/$section" \
-            --links-json links.json
-    fi
+    # Pre-render method pages with api_ref directives.
+    # Always use the current branch's renderer — old branches have Hugo shortcodes
+    # (parameters-block, parameter) that were removed along with their templates.
+    echo "Pre-rendering method pages for section $section..."
+    python3 ../scripts/docs/method_page_renderer.py \
+        data.json "$content_dir/$section" \
+        --links-json links.json
 
     # Clean up intermediate files (no longer needed after pre-rendering)
     rm -f data.json links.json

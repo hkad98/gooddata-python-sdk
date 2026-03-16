@@ -112,12 +112,12 @@ for branch in "${branches_to_process[@]}" ; do
                 gooddata_sdk gooddata_pandas
             python3 ../scripts/docs/python_ref_builder.py api_spec.toml data.json "$target_section" versioned_docs \
                 --export-links links.json
-            # Pre-render method pages with api_ref directives
-            if git cat-file -e "$branch:scripts/docs/method_page_renderer.py" 2>/dev/null; then
-                python3 ../scripts/docs/method_page_renderer.py \
-                    data.json "versioned_docs/$target_section" \
-                    --links-json links.json
-            fi
+            # Pre-render method pages with api_ref directives.
+            # Always use the current branch's renderer — old branches have Hugo shortcodes
+            # (parameters-block, parameter) that were removed along with their templates.
+            python3 ../scripts/docs/method_page_renderer.py \
+                data.json "versioned_docs/$target_section" \
+                --links-json links.json
             rm -f data.json links.json
         fi
     fi
