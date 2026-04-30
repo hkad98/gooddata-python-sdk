@@ -5,7 +5,7 @@ import builtins
 from pathlib import Path
 
 from attrs import define
-from gooddata_api_client.model.declarative_table import DeclarativeTable
+from gooddata_api_client.models.declarative_table import DeclarativeTable
 
 from gooddata_sdk.catalog.base import Base
 from gooddata_sdk.catalog.data_source.declarative_model.physical_model.column import CatalogDeclarativeColumn
@@ -25,7 +25,7 @@ class CatalogDeclarativeTable(Base):
         return DeclarativeTable
 
     def store_to_disk(self, pdm_folder: Path, sort: bool = False) -> None:
-        table_dict = self.to_api().to_dict(camel_case=True)
+        table_dict = self.to_api().to_dict()
         table_file_path = pdm_folder / f"{self.id}.yaml"
         write_layout_to_file(table_file_path, table_dict, sort=sort)
 

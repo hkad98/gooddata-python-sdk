@@ -7,9 +7,9 @@ from typing import Any, Union
 from warnings import warn
 
 from attrs import define, field
-from gooddata_api_client.model.declarative_data_source import DeclarativeDataSource
-from gooddata_api_client.model.declarative_data_sources import DeclarativeDataSources
-from gooddata_api_client.model.test_definition_request import TestDefinitionRequest
+from gooddata_api_client.models.declarative_data_source import DeclarativeDataSource
+from gooddata_api_client.models.declarative_data_sources import DeclarativeDataSources
+from gooddata_api_client.models.test_definition_request import TestDefinitionRequest
 
 from gooddata_sdk.catalog.base import Base, value_in_allowed
 from gooddata_sdk.catalog.entity import ClientSecretCredentialsFromFile, TokenCredentialsFromFile
@@ -189,6 +189,8 @@ class CatalogDeclarativeDataSource(Base):
         private_key_passphrase: str | None = None,
         client_secret: str | None = None,
     ) -> DeclarativeDataSource:
+        from gooddata_sdk.utils import change_case, snake_to_camel
+
         dictionary = self._get_snake_dict()
         if password is not None:
             dictionary["password"] = password
@@ -200,12 +202,13 @@ class CatalogDeclarativeDataSource(Base):
             dictionary["private_key_passphrase"] = private_key_passphrase
         if client_secret is not None:
             dictionary["client_secret"] = client_secret
-        return self.client_class().from_dict(dictionary)
+        # v7 generated ``from_dict`` reads camelCase wire keys; convert before passing.
+        return self.client_class().from_dict(change_case(dictionary, snake_to_camel))
 
     def store_to_disk(self, data_sources_folder: Path, sort: bool = False) -> None:
         data_source_folder = self.data_source_folder(data_sources_folder, self.id)
         file_path = data_source_folder / f"{self.id}.yaml"
-        data_source_dict = self.to_api().to_dict(camel_case=True)
+        data_source_dict = self.to_api().to_dict()
 
         write_layout_to_file(file_path, data_source_dict, sort=sort)
 

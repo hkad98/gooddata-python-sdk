@@ -7,20 +7,21 @@
                     "type": "label"
                 }
             },
-            "local_identifier": "9675acbab3e3413593134d188798549b",
-            "show_all_values": true
+            "localIdentifier": "9675acbab3e3413593134d188798549b",
+            "showAllValues": true
         }
     ],
     "filters": [
         {
-            "absolute_date_filter": {
-                "_from": "2019-01-01 00:00",
+            "absoluteDateFilter": {
                 "dataset": {
                     "identifier": {
                         "id": "date",
                         "type": "dataset"
                     }
                 },
+                "emptyValueHandling": "EXCLUDE",
+                "from": "2019-01-01 00:00",
                 "to": "2019-12-31 23:59"
             }
         }
@@ -30,7 +31,7 @@
             "definition": {
                 "measure": {
                     "aggregation": "SUM",
-                    "compute_ratio": false,
+                    "computeRatio": false,
                     "filters": [],
                     "item": {
                         "identifier": {
@@ -40,7 +41,7 @@
                     }
                 }
             },
-            "local_identifier": "bfa7ec74e46d40e9a580fc6ffb9d83a1"
+            "localIdentifier": "bfa7ec74e46d40e9a580fc6ffb9d83a1"
         }
     ]
 }

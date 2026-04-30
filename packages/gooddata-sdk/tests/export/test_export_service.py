@@ -122,7 +122,7 @@ def test_get_raw_export_bytes_delegates_to_get_exported_content() -> None:
     mock_get.assert_called_once_with(
         workspace_id="ws-id",
         export_id="export-id-123",
-        get_func=mock_api_client.actions_api.get_raw_export,
+        get_func=mock_api_client.actions_api.get_raw_export_without_preload_content,
         timeout=60.0,
         retry=0.2,
         max_retry=5.0,

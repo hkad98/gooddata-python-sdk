@@ -2,18 +2,18 @@
     "definition": {
         "measure": {
             "aggregation": "SUM",
-            "compute_ratio": false,
+            "computeRatio": false,
             "filters": [
                 {
-                    "positive_attribute_filter": {
-                        "_in": {
+                    "positiveAttributeFilter": {
+                        "in": {
                             "values": [
                                 "val1",
                                 "val2"
                             ]
                         },
                         "label": {
-                            "local_identifier": "label_local_id"
+                            "localIdentifier": "label_local_id"
                         }
                     }
                 }
@@ -26,5 +26,5 @@
             }
         }
     },
-    "local_identifier": "test"
+    "localIdentifier": "test"
 }

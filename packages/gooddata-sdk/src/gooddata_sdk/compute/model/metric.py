@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Union
 
 import gooddata_api_client.models as afm_models
-from gooddata_api_client.model_utils import OpenApiModel
+from pydantic import BaseModel as OpenApiModel
 
 from gooddata_sdk.compute.model.attribute import Attribute
 from gooddata_sdk.compute.model.base import ExecModelEntity, Filter, ObjId
@@ -16,6 +16,22 @@ def _extract_local_id(val: Union[str, Metric]) -> str:
     else:
         # if things bomb here it means bad input to model class
         return val.local_id
+
+
+def _wrap_simple_measure_filter(api_filter):  # type: ignore[no-untyped-def]
+    """Wrap a leaf filter into ``FilterDefinitionForSimpleMeasure`` (v7 oneOf)."""
+    attribute_cls_names = {"MatchAttributeFilter", "NegativeAttributeFilter", "PositiveAttributeFilter"}
+    date_cls_names = {"AbsoluteDateFilter", "AllTimeDateFilter", "RelativeDateFilter"}
+    name = type(api_filter).__name__
+    if name in attribute_cls_names:
+        return afm_models.FilterDefinitionForSimpleMeasure(
+            actual_instance=afm_models.AttributeFilter(actual_instance=api_filter)
+        )
+    if name in date_cls_names:
+        return afm_models.FilterDefinitionForSimpleMeasure(
+            actual_instance=afm_models.DateFilter(actual_instance=api_filter)
+        )
+    raise TypeError(f"Unhandled filter type for SimpleMeasureDefinition: {name}")
 
 
 class Metric(ExecModelEntity):
@@ -30,7 +46,11 @@ class Metric(ExecModelEntity):
     def as_api_model(self) -> afm_models.MeasureItem:
         definition = self._body_as_api_model()
 
-        return afm_models.MeasureItem(local_identifier=self._local_id, definition=definition)
+        # v7 wraps the variant body in a oneOf envelope (``MeasureItemDefinition``).
+        return afm_models.MeasureItem(
+            local_identifier=self._local_id,
+            definition=afm_models.MeasureItemDefinition(actual_instance=definition),
+        )
 
     def _body_as_api_model(self) -> OpenApiModel:
         raise NotImplementedError()
@@ -98,26 +118,28 @@ class SimpleMetric(Metric):
         return self._filters
 
     def _body_as_api_model(self) -> afm_models.SimpleMeasureDefinition:
-        _filters = [f.as_api_model() for f in self.filters]
+        # ``SimpleMeasureDefinitionMeasure.filters`` is typed as
+        # ``List[FilterDefinitionForSimpleMeasure]`` — a oneOf envelope
+        # wrapping ``AttributeFilter`` or ``DateFilter``, which in turn wrap
+        # the leaf filter classes. Build that two-layer envelope here.
+        _filters = [_wrap_simple_measure_filter(f.as_api_model()) for f in self.filters]
 
         # aggregation is optional yet the model bombs if None is sent :(
         if self.aggregation is not None:
             return afm_models.SimpleMeasureDefinition(
-                afm_models.SimpleMeasureDefinitionMeasure(
-                    item=self.item.as_afm_id(),
+                measure=afm_models.SimpleMeasureDefinitionMeasure(
+                    item=self.item.as_afm_id_core(),
                     aggregation=self.aggregation,
                     compute_ratio=self.compute_ratio,
                     filters=_filters,
-                    _check_type=False,
                 )
             )
         else:
             return afm_models.SimpleMeasureDefinition(
-                afm_models.SimpleMeasureDefinitionMeasure(
-                    item=self.item.as_afm_id(),
+                measure=afm_models.SimpleMeasureDefinitionMeasure(
+                    item=self.item.as_afm_id_core(),
                     compute_ratio=self.compute_ratio,
                     filters=_filters,
-                    _check_type=False,
                 )
             )
 
@@ -176,7 +198,7 @@ class PopDateMetric(Metric):
         date_attributes = list([a.as_api_model() for a in self.date_attributes])
 
         return afm_models.PopDateMeasureDefinition(
-            afm_models.PopDateMeasureDefinitionOverPeriodMeasure(
+            over_period_measure=afm_models.PopDateMeasureDefinitionOverPeriodMeasure(
                 measure_identifier=measure_identifier, date_attributes=date_attributes
             )
         )
@@ -224,7 +246,7 @@ class PopDatesetMetric(Metric):
         date_datasets = list([d.as_api_model() for d in self.date_datasets])
 
         return afm_models.PopDatasetMeasureDefinition(
-            afm_models.PopDatasetMeasureDefinitionPreviousPeriodMeasure(
+            previous_period_measure=afm_models.PopDatasetMeasureDefinitionPreviousPeriodMeasure(
                 measure_identifier=measure_identifier, date_datasets=date_datasets
             )
         )
@@ -263,7 +285,7 @@ class ArithmeticMetric(Metric):
         measure_identifiers = [afm_models.AfmLocalIdentifier(local_identifier=local_d) for local_d in self._operands]
 
         return afm_models.ArithmeticMeasureDefinition(
-            afm_models.ArithmeticMeasureDefinitionArithmeticMeasure(
+            arithmetic_measure=afm_models.ArithmeticMeasureDefinitionArithmeticMeasure(
                 operator=self.operator, measure_identifiers=measure_identifiers
             )
         )

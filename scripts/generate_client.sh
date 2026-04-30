@@ -66,7 +66,9 @@ done
 set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
 GD_API_CLIENT=$1
-CLIENT_DIR="${ROOT_DIR}/${GD_API_CLIENT}"
+# default location relative to repo root; overridden per-client below where needed
+CLIENT_REL_DIR="${GD_API_CLIENT}"
+CLIENT_DIR="${ROOT_DIR}/${CLIENT_REL_DIR}"
 
 case "$GD_API_CLIENT" in
   gooddata-scan-client)
@@ -82,6 +84,9 @@ case "$GD_API_CLIENT" in
     CLIENT_SRC_ROOT="${CLIENT_DIR}/gooddata_afm_client"
     ;;
   gooddata-api-client)
+      # gooddata-api-client lives under packages/ as a uv workspace member
+      CLIENT_REL_DIR="packages/${GD_API_CLIENT}"
+      CLIENT_DIR="${ROOT_DIR}/${CLIENT_REL_DIR}"
       CLIENT_SRC_ROOT="${CLIENT_DIR}/gooddata_api_client"
       ;;
   *)
@@ -111,8 +116,17 @@ if [[ -d ${CLIENT_DIR} ]]; then
   fi
 else
   echo "Creating CLIENT_DIR and preparing it's content for generate command"
-  mkdir ${CLIENT_DIR}
-  ln -s "../OSS LICENSES/LICENSE (${GD_API_CLIENT}).txt" "${CLIENT_DIR}/LICENSE.txt"
+  mkdir -p ${CLIENT_DIR}
+  # build a relative path from CLIENT_DIR back to the repo root so the
+  # symlink points at OSS LICENSES regardless of nesting depth
+  REL_TO_ROOT=""
+  REL_DIR="${CLIENT_REL_DIR}"
+  while [[ "${REL_DIR}" == */* ]]; do
+    REL_TO_ROOT="../${REL_TO_ROOT}"
+    REL_DIR="${REL_DIR%/*}"
+  done
+  REL_TO_ROOT="../${REL_TO_ROOT}"
+  ln -s "${REL_TO_ROOT}OSS LICENSES/LICENSE (${GD_API_CLIENT}).txt" "${CLIENT_DIR}/LICENSE.txt"
 fi
 # always put .openapi-generator-ignore to the directory, it is one of generated files
 cp ${ROOT_DIR}/.openapi-generator/configs/.openapi-generator-ignore ${CLIENT_DIR}
@@ -127,7 +141,7 @@ docker run --rm \
     -v "${ROOT_DIR}:/local" \
     -u $(id -u ${USER}):$(id -g ${USER}) \
     ${CONN_NETWORK_ARG} \
-    openapitools/openapi-generator-cli:v6.6.0 generate \
+    openapitools/openapi-generator-cli:v7.22.0 generate \
     -c "/local/.openapi-generator/configs/${GD_API_CLIENT}.yaml" \
     -i "${GD_API_URI_PATH}" \
-    -o "/local/${GD_API_CLIENT}"
+    -o "/local/${CLIENT_REL_DIR}"

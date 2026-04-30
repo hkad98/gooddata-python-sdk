@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Literal, Union, cast
 
 import gooddata_api_client.models as afm_models
-from gooddata_api_client.model.elements_request import ElementsRequest
+from gooddata_api_client.models.elements_request import ElementsRequest
 
 from gooddata_sdk.catalog.catalog_service_base import CatalogServiceBase
 from gooddata_sdk.catalog.data_source.validation.data_source import DataSourceValidator
@@ -80,19 +80,15 @@ class CatalogWorkspaceContentService(CatalogServiceBase):
             self._entities_api.get_all_entities_datasets,
             workspace_id,
             include=["attributes", "facts", "aggregatedFacts"],
-            _check_return_type=False,
         )
 
         get_attributes = functools.partial(
             self._entities_api.get_all_entities_attributes,
             workspace_id,
             include=["labels", "datasets"],
-            _check_return_type=False,
         )
 
-        get_metrics = functools.partial(
-            self._entities_api.get_all_entities_metrics, workspace_id, _check_return_type=False
-        )
+        get_metrics = functools.partial(self._entities_api.get_all_entities_metrics, workspace_id)
 
         attributes = load_all_entities(get_attributes)
         datasets = load_all_entities(get_datasets)
@@ -130,7 +126,6 @@ class CatalogWorkspaceContentService(CatalogServiceBase):
             self._entities_api.get_all_entities_attributes,
             workspace_id,
             include=include,
-            _check_return_type=False,
         )
         if rsql_filter is not None:
             get_attributes = functools.partial(get_attributes, filter=rsql_filter)
@@ -152,7 +147,6 @@ class CatalogWorkspaceContentService(CatalogServiceBase):
         get_labels = functools.partial(
             self._entities_api.get_all_entities_labels,
             workspace_id,
-            _check_return_type=False,
         )
         labels = load_all_entities(get_labels)
         catalog_labels = [CatalogLabel.from_api(label) for label in labels.data]
@@ -169,9 +163,7 @@ class CatalogWorkspaceContentService(CatalogServiceBase):
             list[CatalogMetric]:
                 List of all metrics in a given workspace.
         """
-        get_metrics = functools.partial(
-            self._entities_api.get_all_entities_metrics, workspace_id, _check_return_type=False
-        )
+        get_metrics = functools.partial(self._entities_api.get_all_entities_metrics, workspace_id)
         metrics = load_all_entities(get_metrics)
         catalog_metrics = [CatalogMetric.from_api(metric) for metric in metrics.data]
         return catalog_metrics
@@ -187,7 +179,7 @@ class CatalogWorkspaceContentService(CatalogServiceBase):
             list[CatalogFact]:
                 List of all facts in a given workspace.
         """
-        get_facts = functools.partial(self._entities_api.get_all_entities_facts, workspace_id, _check_return_type=False)
+        get_facts = functools.partial(self._entities_api.get_all_entities_facts, workspace_id)
         facts = load_all_entities(get_facts)
         catalog_facts = [CatalogFact.from_api(fact) for fact in facts.data]
         return catalog_facts
@@ -203,9 +195,7 @@ class CatalogWorkspaceContentService(CatalogServiceBase):
             list[CatalogAggregatedFact]:
                 List of all aggregated facts in a given workspace.
         """
-        get_agg_facts = functools.partial(
-            self._entities_api.get_all_entities_aggregated_facts, workspace_id, _check_return_type=False
-        )
+        get_agg_facts = functools.partial(self._entities_api.get_all_entities_aggregated_facts, workspace_id)
         agg_facts = load_all_entities(get_agg_facts)
         catalog_agg_facts = [CatalogAggregatedFact.from_api(agg_fact) for agg_fact in agg_facts.data]
         return catalog_agg_facts
@@ -410,7 +400,7 @@ class CatalogWorkspaceContentService(CatalogServiceBase):
         if exclude is None:
             exclude = []
         return CatalogDeclarativeAnalytics.from_dict(
-            self._layout_api.get_analytics_model(workspace_id=workspace_id, exclude=exclude).to_dict(camel_case=False),
+            self._layout_api.get_analytics_model(workspace_id=workspace_id, exclude=exclude),
             camel_case=False,
         )
 
@@ -681,7 +671,5 @@ class CatalogWorkspaceContentService(CatalogServiceBase):
             paging_params["limit"] = limit
 
         # TODO - fix return type of Paging.next in Backend + add support for this API to SDK
-        values = self._actions_api.compute_label_elements_post(
-            workspace_id, request, _check_return_type=False, **paging_params
-        )
+        values = self._actions_api.compute_label_elements_post(workspace_id, request, **paging_params)
         return [v["title"] for v in values["elements"]]

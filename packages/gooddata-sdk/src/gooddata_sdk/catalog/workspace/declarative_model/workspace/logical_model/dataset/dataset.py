@@ -4,20 +4,20 @@ from __future__ import annotations
 from pathlib import Path
 
 from attrs import define, field
-from gooddata_api_client.model.data_source_table_identifier import DataSourceTableIdentifier
-from gooddata_api_client.model.declarative_aggregated_fact import DeclarativeAggregatedFact
-from gooddata_api_client.model.declarative_attribute import DeclarativeAttribute
-from gooddata_api_client.model.declarative_dataset import DeclarativeDataset
-from gooddata_api_client.model.declarative_dataset_sql import DeclarativeDatasetSql
-from gooddata_api_client.model.declarative_fact import DeclarativeFact
-from gooddata_api_client.model.declarative_label import DeclarativeLabel
-from gooddata_api_client.model.declarative_label_translation import DeclarativeLabelTranslation
-from gooddata_api_client.model.declarative_reference import DeclarativeReference
-from gooddata_api_client.model.declarative_reference_source import DeclarativeReferenceSource
-from gooddata_api_client.model.declarative_source_fact_reference import DeclarativeSourceFactReference
-from gooddata_api_client.model.declarative_workspace_data_filter_column import DeclarativeWorkspaceDataFilterColumn
-from gooddata_api_client.model.geo_area_config import GeoAreaConfig
-from gooddata_api_client.model.geo_collection_identifier import GeoCollectionIdentifier
+from gooddata_api_client.models.data_source_table_identifier import DataSourceTableIdentifier
+from gooddata_api_client.models.declarative_aggregated_fact import DeclarativeAggregatedFact
+from gooddata_api_client.models.declarative_attribute import DeclarativeAttribute
+from gooddata_api_client.models.declarative_dataset import DeclarativeDataset
+from gooddata_api_client.models.declarative_dataset_sql import DeclarativeDatasetSql
+from gooddata_api_client.models.declarative_fact import DeclarativeFact
+from gooddata_api_client.models.declarative_label import DeclarativeLabel
+from gooddata_api_client.models.declarative_label_translation import DeclarativeLabelTranslation
+from gooddata_api_client.models.declarative_reference import DeclarativeReference
+from gooddata_api_client.models.declarative_reference_source import DeclarativeReferenceSource
+from gooddata_api_client.models.declarative_source_fact_reference import DeclarativeSourceFactReference
+from gooddata_api_client.models.declarative_workspace_data_filter_column import DeclarativeWorkspaceDataFilterColumn
+from gooddata_api_client.models.geo_area_config import GeoAreaConfig
+from gooddata_api_client.models.geo_collection_identifier import GeoCollectionIdentifier
 
 from gooddata_sdk.catalog.base import Base
 from gooddata_sdk.catalog.identifier import (
@@ -57,7 +57,7 @@ class CatalogDeclarativeDataset(Base):
 
     def store_to_disk(self, datasets_folder: Path, sort: bool = False) -> None:
         dataset_file = datasets_folder / f"{self.id}.yaml"
-        write_layout_to_file(dataset_file, self.to_api().to_dict(camel_case=True), sort=sort)
+        write_layout_to_file(dataset_file, self.to_api().to_dict(), sort=sort)
 
     @classmethod
     def load_from_disk(cls, dataset_file: Path) -> CatalogDeclarativeDataset:

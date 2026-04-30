@@ -5,7 +5,7 @@
         {
             "definition": {
                 "measure": {
-                    "compute_ratio": false,
+                    "computeRatio": false,
                     "filters": [],
                     "item": {
                         "identifier": {
@@ -15,7 +15,7 @@
                     }
                 }
             },
-            "local_identifier": "simple_metric_local_id"
+            "localIdentifier": "simple_metric_local_id"
         }
     ]
 }

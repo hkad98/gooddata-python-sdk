@@ -2,8 +2,8 @@
 from __future__ import annotations
 
 from attrs import define
-from gooddata_api_client.model.json_api_user_group_in import JsonApiUserGroupIn
-from gooddata_api_client.model.json_api_user_group_in_document import JsonApiUserGroupInDocument
+from gooddata_api_client.models.json_api_user_group_in import JsonApiUserGroupIn
+from gooddata_api_client.models.json_api_user_group_in_document import JsonApiUserGroupInDocument
 
 from gooddata_sdk.catalog.base import Base
 
@@ -28,6 +28,7 @@ class CatalogUserGroupDocument(Base):
 @define(kw_only=True)
 class CatalogUserGroup(Base):
     id: str
+    type: str = "userGroup"
     attributes: CatalogUserGroupAttributes | None = None
     relationships: CatalogUserGroupRelationships | None = None
 

@@ -1,11 +1,11 @@
 {
-    "match_attribute_filter": {
-        "case_sensitive": false,
+    "matchAttributeFilter": {
+        "caseSensitive": false,
         "label": {
-            "local_identifier": "local_id"
+            "localIdentifier": "local_id"
         },
         "literal": "suffix",
-        "match_type": "ENDS_WITH",
+        "matchType": "ENDS_WITH",
         "negate": true
     }
 }

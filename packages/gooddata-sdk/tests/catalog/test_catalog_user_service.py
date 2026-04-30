@@ -295,7 +295,7 @@ def test_get_declarative_users(test_config):
     users = sdk.catalog_user.get_declarative_users()
 
     _assert_users_default(users.users, test_config)
-    assert users.to_dict(camel_case=True) == layout_api.get_users_layout().to_dict(camel_case=True)
+    assert users.to_dict(camel_case=True) == layout_api.get_users_layout().to_dict()
 
 
 @gd_vcr.use_cassette(str(_fixtures_dir / "store_declarative_users.yaml"))
@@ -361,7 +361,7 @@ def test_get_declarative_user_groups(test_config):
     user_groups = sdk.catalog_user.get_declarative_user_groups()
 
     _assert_user_groups_default(user_groups.user_groups, test_config)
-    assert user_groups.to_dict(camel_case=True) == layout_api.get_user_groups_layout().to_dict(camel_case=True)
+    assert user_groups.to_dict(camel_case=True) == layout_api.get_user_groups_layout().to_dict()
 
 
 @gd_vcr.use_cassette(str(_fixtures_dir / "store_declarative_user_groups.yaml"))
@@ -435,9 +435,7 @@ def test_get_declarative_users_user_groups(test_config):
     users_user_groups = sdk.catalog_user.get_declarative_users_user_groups()
 
     _assert_users_user_groups_default(users_user_groups, test_config)
-    assert users_user_groups.to_dict(camel_case=True) == layout_api.get_users_user_groups_layout().to_dict(
-        camel_case=True
-    )
+    assert users_user_groups.to_dict(camel_case=True) == layout_api.get_users_user_groups_layout().to_dict()
 
 
 @gd_vcr.use_cassette(str(_fixtures_dir / "store_declarative_users_user_groups.yaml"))

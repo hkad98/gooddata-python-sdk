@@ -7,14 +7,14 @@ from collections.abc import Iterator
 from typing import Any, Union
 
 from gooddata_api_client import ApiException
-from gooddata_api_client.model.afm_cancel_tokens import AfmCancelTokens
-from gooddata_api_client.model.chat_history_request import ChatHistoryRequest
-from gooddata_api_client.model.chat_history_result import ChatHistoryResult
-from gooddata_api_client.model.chat_request import ChatRequest
-from gooddata_api_client.model.chat_result import ChatResult
-from gooddata_api_client.model.saved_visualization import SavedVisualization
-from gooddata_api_client.model.search_request import SearchRequest
-from gooddata_api_client.model.search_result import SearchResult
+from gooddata_api_client.models.afm_cancel_tokens import AfmCancelTokens
+from gooddata_api_client.models.chat_history_request import ChatHistoryRequest
+from gooddata_api_client.models.chat_history_result import ChatHistoryResult
+from gooddata_api_client.models.chat_request import ChatRequest
+from gooddata_api_client.models.chat_result import ChatResult
+from gooddata_api_client.models.saved_visualization import SavedVisualization
+from gooddata_api_client.models.search_request import SearchRequest
+from gooddata_api_client.models.search_result import SearchResult
 
 from gooddata_sdk.client import GoodDataApiClient
 from gooddata_sdk.compute.model.execution import (
@@ -55,13 +55,13 @@ class ComputeService:
             timeout: request timeout in seconds. If a tuple is provided, it is used as (connection timeout, read timeout).
          into dimensions
         """
-        response, _, headers = self._actions_api.compute_report(
+        api_response = self._actions_api.compute_report_with_http_info(
             workspace_id,
             exec_def.as_api_model(),
-            _check_return_type=False,
-            _return_http_data_only=False,
             _request_timeout=timeout,
         )
+        response = api_response.data
+        headers = api_response.headers
 
         return Execution(
             api_client=self._api_client,
@@ -83,12 +83,12 @@ class ComputeService:
         Returns:
             ResultCacheMetadata: execution result's metadata
         """
-        result_cache_metadata, _, http_headers = self._actions_api.retrieve_execution_metadata(
+        api_response = self._actions_api.retrieve_execution_metadata_with_http_info(
             workspace_id,
             result_id,
-            _check_return_type=False,
-            _return_http_data_only=False,
         )
+        result_cache_metadata = api_response.data
+        http_headers = api_response.headers
         custom_headers = self._api_client.custom_headers
         if "X-GDC-TRACE-ID" in custom_headers and "X-GDC-TRACE-ID" in http_headers:
             logger.info(
@@ -146,7 +146,7 @@ class ComputeService:
             ChatResult: Chat response
         """
         chat_request = ChatRequest(question=question)
-        response = self._actions_api.ai_chat(workspace_id, chat_request, _check_return_type=False)
+        response = self._actions_api.ai_chat(workspace_id, chat_request)
         return response
 
     def _parse_sse_events(self, raw: str) -> Iterator[Any]:
@@ -171,9 +171,7 @@ class ComputeService:
             Iterator[Any]: Yields parsed JSON objects from each SSE event's data field
         """
         chat_request = ChatRequest(question=question)
-        response = self._actions_api.ai_chat_stream(
-            workspace_id, chat_request, _check_return_type=False, _preload_content=False
-        )
+        response = self._actions_api.ai_chat_stream_without_preload_content(workspace_id, chat_request)
         buffer = ""
         try:
             for chunk in response.stream(decode_content=True):
@@ -204,7 +202,7 @@ class ComputeService:
         chat_history_request = ChatHistoryRequest(
             chat_history_interaction_id=chat_history_interaction_id, reset=False, thread_id_suffix=thread_id_suffix
         )
-        response = self._actions_api.ai_chat_history(workspace_id, chat_history_request, _check_return_type=False)
+        response = self._actions_api.ai_chat_history(workspace_id, chat_history_request)
         return response
 
     def reset_ai_chat_history(self, workspace_id: str) -> None:
@@ -215,7 +213,7 @@ class ComputeService:
             workspace_id (str): workspace identifier
         """
         chat_history_request = ChatHistoryRequest(reset=True)
-        self._actions_api.ai_chat_history(workspace_id, chat_history_request, _check_return_type=False)
+        self._actions_api.ai_chat_history(workspace_id, chat_history_request)
 
     def set_ai_chat_history_feedback(
         self,
@@ -239,7 +237,7 @@ class ComputeService:
             thread_id_suffix=thread_id_suffix,
             reset=False,
         )
-        self._actions_api.ai_chat_history(workspace_id, chat_history_request, _check_return_type=False)
+        self._actions_api.ai_chat_history(workspace_id, chat_history_request)
 
     def set_ai_chat_history_saved_visualization(
         self,
@@ -269,7 +267,7 @@ class ComputeService:
             thread_id_suffix=thread_id_suffix,
             reset=False,
         )
-        self._actions_api.ai_chat_history(workspace_id, chat_history_request, _check_return_type=False)
+        self._actions_api.ai_chat_history(workspace_id, chat_history_request)
 
     def search_ai(
         self,
@@ -312,7 +310,7 @@ class ComputeService:
         if title_to_descriptor_ratio is not None:
             search_params["title_to_descriptor_ratio"] = title_to_descriptor_ratio
         search_request = SearchRequest(question=question, **search_params)
-        response = self._actions_api.ai_search(workspace_id, search_request, _check_return_type=False)
+        response = self._actions_api.ai_search(workspace_id, search_request)
         return response
 
     def cancel_executions(self, executions: dict[str, dict[str, str]]) -> None:
@@ -349,4 +347,4 @@ class ComputeService:
         Returns:
             None
         """
-        self._actions_api.metadata_sync(workspace_id, async_req=async_req, _check_return_type=False)
+        self._actions_api.metadata_sync(workspace_id, async_req=async_req)

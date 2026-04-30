@@ -15,7 +15,7 @@ from xml.etree import ElementTree as ET
 from attrs import evolve
 from gooddata_api_client.api.translations_api import LocaleRequest
 from gooddata_api_client.exceptions import NotFoundException
-from gooddata_api_client.model.resolve_settings_request import ResolveSettingsRequest
+from gooddata_api_client.models.resolve_settings_request import ResolveSettingsRequest
 
 from gooddata_sdk import CatalogDeclarativeAutomation
 from gooddata_sdk.catalog.catalog_service_base import CatalogServiceBase
@@ -141,7 +141,6 @@ class CatalogWorkspaceService(CatalogServiceBase):
         get_workspaces = functools.partial(
             self._entities_api.get_all_entities_workspaces,
             include=["workspaces"],
-            _check_return_type=False,
         )
         workspaces = load_all_entities(get_workspaces)
         return [CatalogWorkspace.from_api(w) for w in workspaces.data]
@@ -186,7 +185,6 @@ class CatalogWorkspaceService(CatalogServiceBase):
         get_workspace_settings = functools.partial(
             self._entities_api.get_all_entities_workspace_settings,
             workspace_id,
-            _check_return_type=False,
         )
         workspace_settings = load_all_entities(get_workspace_settings).data
         return [CatalogWorkspaceSetting.from_api(ws) for ws in workspace_settings]
@@ -210,7 +208,6 @@ class CatalogWorkspaceService(CatalogServiceBase):
             setting.to_dict()
             for setting in self._client.actions_api.workspace_resolve_all_settings(
                 workspace_id,
-                _check_return_type=False,
             )
         ]
         return {setting["type"]: setting for setting in resolved_workspace_settings}
@@ -234,7 +231,6 @@ class CatalogWorkspaceService(CatalogServiceBase):
             for setting in self._client.actions_api.workspace_resolve_settings(
                 workspace_id,
                 ResolveSettingsRequest(settings=settings),
-                _check_return_type=False,
             )
         ]
         return {setting["type"]: setting for setting in resolved_workspace_settings}
@@ -255,7 +251,7 @@ class CatalogWorkspaceService(CatalogServiceBase):
         if exclude is None:
             exclude = []
         return CatalogDeclarativeWorkspaces.from_dict(
-            self._layout_api.get_workspaces_layout(exclude=exclude).to_dict(camel_case=False), camel_case=False
+            self._layout_api.get_workspaces_layout(exclude=exclude), camel_case=False
         )
 
     def put_declarative_workspaces(self, workspace: CatalogDeclarativeWorkspaces) -> None:
@@ -332,7 +328,7 @@ class CatalogWorkspaceService(CatalogServiceBase):
         if exclude is None:
             exclude = []
         return CatalogDeclarativeWorkspaceModel.from_dict(
-            self._layout_api.get_workspace_layout(workspace_id=workspace_id, exclude=exclude).to_dict(camel_case=False),
+            self._layout_api.get_workspace_layout(workspace_id=workspace_id, exclude=exclude),
             camel_case=False,
         )
 
@@ -993,10 +989,9 @@ class CatalogWorkspaceService(CatalogServiceBase):
         Returns:
             bytes: The encoded metadata localization in the target language.
         """
-        ans = self._actions_api.retrieve_translations(
+        ans = self._actions_api.retrieve_translations_without_preload_content(
             workspace_id=workspace_id,
             locale_request=LocaleRequest(locale=target_language),
-            _preload_content=False,
         )
         return ans.data
 
@@ -1036,7 +1031,7 @@ class CatalogWorkspaceService(CatalogServiceBase):
             None
         """
         self._client.actions_api.clean_translations(
-            workspace_id=workspace_id, locale_request=LocaleRequest(target_language)
+            workspace_id=workspace_id, locale_request=LocaleRequest(locale=target_language)
         )
 
     def add_metadata_locale(
@@ -1057,10 +1052,9 @@ class CatalogWorkspaceService(CatalogServiceBase):
         Returns:
             None
         """
-        ans = self._actions_api.retrieve_translations(
+        ans = self._actions_api.retrieve_translations_without_preload_content(
             workspace_id=workspace_id,
             locale_request=LocaleRequest(locale=target_language),
-            _preload_content=False,
         )
 
         encoded_xml = self._add_target_tags(ans.data.decode(), translator_func)
@@ -1201,7 +1195,6 @@ class CatalogWorkspaceService(CatalogServiceBase):
         get_user_data_filters = functools.partial(
             self._entities_api.get_all_entities_user_data_filters,
             workspace_id,
-            _check_return_type=False,
             include=["ALL"],
         )
         user_data_filters = load_all_entities_dict(get_user_data_filters, camel_case=False)
@@ -1256,7 +1249,6 @@ class CatalogWorkspaceService(CatalogServiceBase):
             workspace_id=workspace_id,
             object_id=user_data_filter_id,
             include=["ALL"],
-            _check_return_type=False,
         ).data
 
         return CatalogUserDataFilter.from_dict(user_data_filter_dict, camel_case=True)
@@ -1404,7 +1396,6 @@ class CatalogWorkspaceService(CatalogServiceBase):
         get_filter_views = functools.partial(
             self._entities_api.get_all_entities_filter_views,
             workspace_id,
-            _check_return_type=False,
             include=["ALL"],
         )
         filter_views = load_all_entities_dict(get_filter_views, camel_case=False)
@@ -1459,7 +1450,6 @@ class CatalogWorkspaceService(CatalogServiceBase):
             workspace_id=workspace_id,
             object_id=filter_view_id,
             include=["ALL"],
-            _check_return_type=False,
         ).data
 
         return CatalogFilterView.from_dict(filter_view_dict, camel_case=True)

@@ -17,7 +17,7 @@ class CatalogAnalyticsObjectBase(Base):
 
     def store_to_disk(self, analytics_folder: Path, sort: bool = False) -> None:
         analytics_file = analytics_folder / f"{self.id}.yaml"
-        write_layout_to_file(analytics_file, self.to_api().to_dict(camel_case=True), sort=sort)
+        write_layout_to_file(analytics_file, self.to_api().to_dict(), sort=sort)
 
     @classmethod
     def load_from_disk(cls: type[T], analytics_file: Path) -> T:

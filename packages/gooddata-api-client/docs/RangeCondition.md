@@ -1,0 +1,30 @@
+# RangeCondition
+
+Condition that checks if the metric value is within a given range.
+
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**range** | [**RangeConditionRange**](RangeConditionRange.md) |  | 
+
+## Example
+
+```python
+from gooddata_api_client.models.range_condition import RangeCondition
+
+# TODO update the JSON string below
+json = "{}"
+# create an instance of RangeCondition from a JSON string
+range_condition_instance = RangeCondition.from_json(json)
+# print the JSON string representation of the object
+print(RangeCondition.to_json())
+
+# convert the object into a dict
+range_condition_dict = range_condition_instance.to_dict()
+# create an instance of RangeCondition from a dict
+range_condition_from_dict = RangeCondition.from_dict(range_condition_dict)
+```
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
+

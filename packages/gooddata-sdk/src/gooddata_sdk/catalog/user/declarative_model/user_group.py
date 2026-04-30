@@ -4,9 +4,9 @@ from __future__ import annotations
 from pathlib import Path
 
 from attrs import define, field
-from gooddata_api_client.model.declarative_user_group import DeclarativeUserGroup
-from gooddata_api_client.model.declarative_user_group_permission import DeclarativeUserGroupPermission
-from gooddata_api_client.model.declarative_user_groups import DeclarativeUserGroups
+from gooddata_api_client.models.declarative_user_group import DeclarativeUserGroup
+from gooddata_api_client.models.declarative_user_group_permission import DeclarativeUserGroupPermission
+from gooddata_api_client.models.declarative_user_groups import DeclarativeUserGroups
 
 from gooddata_sdk.catalog.base import Base, value_in_allowed
 from gooddata_sdk.catalog.identifier import CatalogAssigneeIdentifier, CatalogDeclarativeUserGroupIdentifier
@@ -36,7 +36,7 @@ class CatalogDeclarativeUserGroups(Base):
         user_groups_directory = layout_organization_folder / LAYOUT_USER_GROUPS_DIR
         user_groups_file = user_groups_directory / LAYOUT_USER_GROUPS_FILE
         create_directory(user_groups_directory)
-        user_groups = [user_group.to_dict(camel_case=True) for user_group in self.user_groups]
+        user_groups = [user_group.to_dict() for user_group in self.user_groups]
         write_layout_to_file(user_groups_file, user_groups, sort=sort)
 
 

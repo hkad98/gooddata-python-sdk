@@ -2,7 +2,7 @@
 from pathlib import Path
 
 from attrs import define
-from gooddata_api_client.model.declarative_dataset_extension import DeclarativeDatasetExtension
+from gooddata_api_client.models.declarative_dataset_extension import DeclarativeDatasetExtension
 
 from gooddata_sdk.catalog.base import Base
 from gooddata_sdk.catalog.workspace.declarative_model.workspace.logical_model.data_filter_references import (
@@ -24,7 +24,7 @@ class CatalogDeclarativeDatasetExtension(Base):
 
     def store_to_disk(self, dataset_extension_folder: Path, sort: bool = False) -> None:
         dataset_extension_file = dataset_extension_folder / f"{self.id}.yaml"
-        write_layout_to_file(dataset_extension_file, self.to_api().to_dict(camel_case=True), sort=sort)
+        write_layout_to_file(dataset_extension_file, self.to_api().to_dict(), sort=sort)
 
     @classmethod
     def load_from_disk(cls, dataset_extension_file: Path) -> "CatalogDeclarativeDatasetExtension":

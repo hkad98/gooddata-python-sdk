@@ -6,13 +6,12 @@ from importlib.util import find_spec
 from typing import Any, Literal, TypeAlias, Union, cast
 
 from attrs import define
-from gooddata_api_client.model.inline_filter_definition_inline import InlineFilterDefinitionInline
+from gooddata_api_client.models.inline_filter_definition_inline import InlineFilterDefinitionInline
 
 if find_spec("icu") is not None:
     from icu import Locale, SimpleDateFormat  # type: ignore
 
 import gooddata_api_client.models as afm_models
-from gooddata_api_client.model_utils import OpenApiModel
 from gooddata_api_client.models import AbsoluteDateFilterAbsoluteDateFilter as AbsoluteDateFilterBody
 from gooddata_api_client.models import AllTimeDateFilterAllTimeDateFilter as AllTimeDateFilterBody
 from gooddata_api_client.models import (
@@ -27,6 +26,7 @@ from gooddata_api_client.models import PositiveAttributeFilterPositiveAttributeF
 from gooddata_api_client.models import RangeMeasureValueFilterRangeMeasureValueFilter as RangeMeasureValueFilterBody
 from gooddata_api_client.models import RankingFilterRankingFilter as RankingFilterBody
 from gooddata_api_client.models import RelativeDateFilterRelativeDateFilter as RelativeDateFilterBody
+from pydantic import BaseModel as OpenApiModel
 
 from gooddata_sdk.compute.model.attribute import Attribute
 from gooddata_sdk.compute.model.base import Filter, ObjId
@@ -88,11 +88,11 @@ def _extract_id_or_local_id(val: Union[ObjId, Attribute, Metric, str]) -> Union[
         return val.local_id
 
 
-def _to_identifier(val: Union[ObjId, str]) -> Union[afm_models.AfmLocalIdentifier, afm_models.AfmIdentifier]:
+def _to_identifier(val: Union[ObjId, str]) -> afm_models.AfmIdentifier:
     if isinstance(val, str):
-        return afm_models.AfmLocalIdentifier(local_identifier=val)
+        return afm_models.AfmIdentifier(actual_instance=afm_models.AfmLocalIdentifier(local_identifier=val))
 
-    return val.as_identifier()
+    return afm_models.AfmIdentifier(actual_instance=val.as_identifier())
 
 
 class AttributeFilter(Filter):
@@ -128,8 +128,8 @@ class PositiveAttributeFilter(AttributeFilter):
     def as_api_model(self) -> afm_models.PositiveAttributeFilter:
         label_id = _to_identifier(self._label)
         elements = afm_models.AttributeFilterElements(values=self.values)
-        body = PositiveAttributeFilterBody(label=label_id, _in=elements, _check_type=False)
-        return afm_models.PositiveAttributeFilter(body, _check_type=False)
+        body = PositiveAttributeFilterBody(label=label_id, var_in=elements)
+        return afm_models.PositiveAttributeFilter(positive_attribute_filter=body)
 
     def description(self, labels: dict[str, str], format_locale: str | None = None) -> str:
         label_id = self.label.id if isinstance(self.label, ObjId) else self.label
@@ -144,8 +144,8 @@ class NegativeAttributeFilter(AttributeFilter):
     def as_api_model(self) -> afm_models.NegativeAttributeFilter:
         label_id = _to_identifier(self._label)
         elements = afm_models.AttributeFilterElements(values=self.values)
-        body = NegativeAttributeFilterBody(label=label_id, not_in=elements, _check_type=False)
-        return afm_models.NegativeAttributeFilter(body)
+        body = NegativeAttributeFilterBody(label=label_id, not_in=elements)
+        return afm_models.NegativeAttributeFilter(negative_attribute_filter=body)
 
     def description(self, labels: dict[str, str], format_locale: str | None = None) -> str:
         label_id = self.label.id if isinstance(self.label, ObjId) else self.label
@@ -236,7 +236,7 @@ class MatchAttributeFilter(Filter):
             negate=self._negate,
             case_sensitive=self._case_sensitive,
         )
-        return afm_models.MatchAttributeFilter(body)
+        return afm_models.MatchAttributeFilter(match_attribute_filter=body)
 
     def description(self, labels: dict[str, str], format_locale: str | None = None) -> str:
         label_id = self.label.id if isinstance(self.label, ObjId) else self.label
@@ -292,9 +292,8 @@ class BoundedFilter:
     def as_api_model(self) -> afm_models.BoundedFilter:
         return afm_models.BoundedFilter(
             granularity=self.granularity,
-            _from=self.from_shift,
+            var_from=self.from_shift,
             to=self.to_shift,
-            _check_type=False,
         )
 
 
@@ -357,11 +356,10 @@ class RelativeDateFilter(Filter):
 
     def as_api_model(self) -> afm_models.RelativeDateFilter:
         body_params = {
-            "dataset": self.dataset.as_afm_id(),
+            "dataset": self.dataset.as_afm_id_dataset(),
             "granularity": self.granularity,
-            "_from": self.from_shift,
+            "var_from": self.from_shift,
             "to": self.to_shift,
-            "_check_type": False,
         }
 
         if self.bounded_filter is not None:
@@ -371,7 +369,7 @@ class RelativeDateFilter(Filter):
             body_params["empty_value_handling"] = self.empty_value_handling
 
         body = RelativeDateFilterBody(**body_params)
-        return afm_models.RelativeDateFilter(body)
+        return afm_models.RelativeDateFilter(relative_date_filter=body)
 
     def description(self, labels: dict[str, str], format_locale: str | None = None) -> str:
         # TODO compare with other period is not implemented as it's not defined in the filter but in measures
@@ -454,8 +452,7 @@ class AllTimeDateFilter(Filter):
 
     def as_api_model(self) -> afm_models.AllTimeDateFilter:
         body_params: dict[str, Any] = {
-            "dataset": self.dataset.as_afm_id(),
-            "_check_type": False,
+            "dataset": self.dataset.as_afm_id_dataset(),
         }
 
         if self.granularity is not None:
@@ -465,7 +462,7 @@ class AllTimeDateFilter(Filter):
             body_params["empty_value_handling"] = self.empty_value_handling
 
         body = AllTimeDateFilterBody(**body_params)
-        return afm_models.AllTimeDateFilter(body, _check_type=False)
+        return afm_models.AllTimeDateFilter(all_time_date_filter=body)
 
     def description(self, labels: dict[str, str], format_locale: str | None = None) -> str:
         return f"{labels.get(self.dataset.id, self.dataset.id)}: All time"
@@ -513,16 +510,15 @@ class AbsoluteDateFilter(Filter):
 
     def as_api_model(self) -> afm_models.AbsoluteDateFilter:
         body_params: dict[str, Any] = dict(
-            dataset=self.dataset.as_afm_id(),
-            _from=self._from_date,
+            dataset=self.dataset.as_afm_id_dataset(),
+            var_from=self._from_date,
             to=self._to_date,
-            _check_type=False,
         )
         if self.empty_value_handling is not None:
             body_params["empty_value_handling"] = self.empty_value_handling
 
         body = AbsoluteDateFilterBody(**body_params)
-        return afm_models.AbsoluteDateFilter(body)
+        return afm_models.AbsoluteDateFilter(absolute_date_filter=body)
 
     def __eq__(self, other: object) -> bool:
         return (
@@ -641,7 +637,6 @@ class MetricValueFilter(Filter):
         kwargs = dict(
             measure=measure,
             operator=self.operator,
-            _check_type=False,
         )
         if self.treat_nulls_as is not None:
             kwargs["treat_null_values_as"] = self.treat_nulls_as
@@ -650,13 +645,13 @@ class MetricValueFilter(Filter):
             kwargs["value"] = self.values[0]
 
             body = ComparisonMeasureValueFilterBody(**kwargs)
-            return afm_models.ComparisonMeasureValueFilter(body)
+            return afm_models.ComparisonMeasureValueFilter(comparison_measure_value_filter=body)
         else:
-            kwargs["_from"] = min(self.values)
+            kwargs["var_from"] = min(self.values)
             kwargs["to"] = max(self.values)
 
             body = RangeMeasureValueFilterBody(**kwargs)
-            return afm_models.RangeMeasureValueFilter(body)
+            return afm_models.RangeMeasureValueFilter(range_measure_value_filter=body)
 
     def description(self, labels: dict[str, str], format_locale: str | None = None) -> str:
         metric_id = self.metric.id if isinstance(self.metric, ObjId) else self.metric
@@ -680,9 +675,10 @@ class MetricValueComparisonCondition:
         comparison = afm_models.ComparisonConditionComparison(
             operator=self.operator,
             value=float(self.value),
-            _check_type=False,
         )
-        return afm_models.MeasureValueCondition(comparison=comparison, _check_type=False)
+        # ``MeasureValueCondition`` is a v7 oneOf wrapper over
+        # ``ComparisonCondition`` / ``RangeCondition``; we wrap explicitly.
+        return afm_models.MeasureValueCondition(actual_instance=afm_models.ComparisonCondition(comparison=comparison))
 
     def description(self) -> str:
         return f"{_METRIC_VALUE_FILTER_OPERATOR_LABEL.get(self.operator, self.operator)} {float(self.value)}"
@@ -696,12 +692,11 @@ class MetricValueRangeCondition:
 
     def as_api_model(self) -> afm_models.MeasureValueCondition:
         range_body = afm_models.RangeConditionRange(
-            _from=float(self.from_value),
+            var_from=float(self.from_value),
             operator=self.operator,
             to=float(self.to_value),
-            _check_type=False,
         )
-        return afm_models.MeasureValueCondition(range=range_body, _check_type=False)
+        return afm_models.MeasureValueCondition(actual_instance=afm_models.RangeCondition(range=range_body))
 
     def description(self) -> str:
         not_between = "not " if self.operator == "NOT_BETWEEN" else ""
@@ -754,13 +749,12 @@ class CompoundMetricValueFilter(Filter):
         kwargs: dict[str, Any] = dict(
             measure=measure,
             conditions=[c.as_api_model() for c in self.conditions],
-            _check_type=False,
         )
         if self.treat_nulls_as is not None:
             kwargs["treat_null_values_as"] = self.treat_nulls_as
 
         body = CompoundMeasureValueFilterBody(**kwargs)
-        return afm_models.CompoundMeasureValueFilter(body, _check_type=False)
+        return afm_models.CompoundMeasureValueFilter(compound_measure_value_filter=body)
 
     def description(self, labels: dict[str, str], format_locale: str | None = None) -> str:
         metric_id = self.metric.id if isinstance(self.metric, ObjId) else self.metric
@@ -817,10 +811,8 @@ class RankingFilter(Filter):
         dimensionality = {}
         if self.dimensionality:
             dimensionality["dimensionality"] = [_to_identifier(d) for d in self.dimensionality]
-        body = RankingFilterBody(
-            measures=measures, operator=self.operator, value=self.value, _check_type=False, **dimensionality
-        )
-        return afm_models.RankingFilter(body)
+        body = RankingFilterBody(measures=measures, operator=self.operator, value=self.value, **dimensionality)
+        return afm_models.RankingFilter(ranking_filter=body)
 
     def description(self, labels: dict[str, str], format_locale: str | None = None) -> str:
         # TODO more metrics and dimensions not supported now as it's not supported on FE as well
@@ -876,4 +868,4 @@ class InlineFilter(Filter):
         if self.local_identifier is not None:
             kwargs["local_identifier"] = str(self.local_identifier)
         body = InlineFilterDefinitionInline(self.maql, **kwargs)
-        return afm_models.InlineFilterDefinition(body, _check_type=False)
+        return afm_models.InlineFilterDefinition(inline=body)

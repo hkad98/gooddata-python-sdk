@@ -1,0 +1,5 @@
+# Reference-only dump of upstream v7 python templates, generated on demand:
+#   docker run --rm -v $PWD:/local openapitools/openapi-generator-cli:v7.22.0 \
+#     author template -g python -o /local/.openapi-generator/v7_default_templates
+# Used for diffing against custom_templates/ when upgrading the generator.
+v7_default_templates/

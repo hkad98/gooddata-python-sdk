@@ -7,32 +7,35 @@
                     "type": "label"
                 }
             },
-            "local_identifier": "a_label.opportunity.id.name"
+            "localIdentifier": "a_label.opportunity.id.name",
+            "showAllValues": false
         }
     ],
     "filters": [
         {
-            "relative_date_filter": {
-                "_from": -10,
+            "relativeDateFilter": {
                 "dataset": {
                     "identifier": {
                         "id": "closed.dt",
                         "type": "dataset"
                     }
                 },
+                "emptyValueHandling": "EXCLUDE",
+                "from": -10,
                 "granularity": "DAY",
                 "to": -1
             }
         },
         {
-            "absolute_date_filter": {
-                "_from": "2021-07-01 18:23",
+            "absoluteDateFilter": {
                 "dataset": {
                     "identifier": {
                         "id": "closed.dt",
                         "type": "dataset"
                     }
                 },
+                "emptyValueHandling": "EXCLUDE",
+                "from": "2021-07-01 18:23",
                 "to": "2021-07-16 18:23"
             }
         }
@@ -41,7 +44,7 @@
         {
             "definition": {
                 "measure": {
-                    "compute_ratio": false,
+                    "computeRatio": false,
                     "filters": [],
                     "item": {
                         "identifier": {
@@ -51,7 +54,7 @@
                     }
                 }
             },
-            "local_identifier": "m_aangOxLSeztu"
+            "localIdentifier": "m_aangOxLSeztu"
         }
     ]
 }

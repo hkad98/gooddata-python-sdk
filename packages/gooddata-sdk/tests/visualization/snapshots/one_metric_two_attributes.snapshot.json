@@ -7,7 +7,8 @@
                     "type": "label"
                 }
             },
-            "local_identifier": "a_label.owner.department"
+            "localIdentifier": "a_label.owner.department",
+            "showAllValues": false
         },
         {
             "label": {
@@ -16,7 +17,8 @@
                     "type": "label"
                 }
             },
-            "local_identifier": "a_label.product.id.name"
+            "localIdentifier": "a_label.product.id.name",
+            "showAllValues": false
         }
     ],
     "filters": [],
@@ -24,7 +26,7 @@
         {
             "definition": {
                 "measure": {
-                    "compute_ratio": false,
+                    "computeRatio": false,
                     "filters": [],
                     "item": {
                         "identifier": {
@@ -34,7 +36,7 @@
                     }
                 }
             },
-            "local_identifier": "m_aangOxLSeztu"
+            "localIdentifier": "m_aangOxLSeztu"
         }
     ]
 }

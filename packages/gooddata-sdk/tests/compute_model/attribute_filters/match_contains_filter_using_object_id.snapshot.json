@@ -1,6 +1,6 @@
 {
-    "match_attribute_filter": {
-        "case_sensitive": false,
+    "matchAttributeFilter": {
+        "caseSensitive": false,
         "label": {
             "identifier": {
                 "id": "label.id",
@@ -8,7 +8,7 @@
             }
         },
         "literal": "bar",
-        "match_type": "CONTAINS",
+        "matchType": "CONTAINS",
         "negate": false
     }
 }

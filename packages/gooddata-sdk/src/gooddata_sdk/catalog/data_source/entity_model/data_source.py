@@ -6,12 +6,12 @@ from typing import Any, ClassVar, TypeVar
 
 from attrs import Attribute, asdict, define, field
 from cattrs import structure
-from gooddata_api_client.model.json_api_data_source_in import JsonApiDataSourceIn
-from gooddata_api_client.model.json_api_data_source_in_attributes import JsonApiDataSourceInAttributes
-from gooddata_api_client.model.json_api_data_source_in_document import JsonApiDataSourceInDocument
-from gooddata_api_client.model.json_api_data_source_patch import JsonApiDataSourcePatch
-from gooddata_api_client.model.json_api_data_source_patch_attributes import JsonApiDataSourcePatchAttributes
-from gooddata_api_client.model.json_api_data_source_patch_document import JsonApiDataSourcePatchDocument
+from gooddata_api_client.models.json_api_data_source_in import JsonApiDataSourceIn
+from gooddata_api_client.models.json_api_data_source_in_attributes import JsonApiDataSourceInAttributes
+from gooddata_api_client.models.json_api_data_source_in_document import JsonApiDataSourceInDocument
+from gooddata_api_client.models.json_api_data_source_patch import JsonApiDataSourcePatch
+from gooddata_api_client.models.json_api_data_source_patch_attributes import JsonApiDataSourcePatchAttributes
+from gooddata_api_client.models.json_api_data_source_patch_document import JsonApiDataSourcePatchDocument
 
 from gooddata_sdk.catalog.base import Base, value_in_allowed
 from gooddata_sdk.catalog.entity import (
@@ -75,6 +75,7 @@ class CatalogDataSourceBase(Base):
         return JsonApiDataSourceInDocument(
             data=JsonApiDataSourceIn(
                 id=self.id,
+                type="dataSource",
                 attributes=JsonApiDataSourceInAttributes(
                     **kwargs,
                 ),
@@ -82,7 +83,10 @@ class CatalogDataSourceBase(Base):
         )
 
     @classmethod
-    def from_api(cls: builtins.type[U], entity: dict[str, Any]) -> U:
+    def from_api(cls: builtins.type[U], entity: Any) -> U:
+        from gooddata_sdk.catalog.base import _api_to_dict
+
+        entity = _api_to_dict(entity)
         attributes = entity["attributes"]
         credentials = Credentials.create(cls._SUPPORTED_CREDENTIALS, entity)
         return structure({"id": entity["id"], "credentials": credentials, **attributes}, cls)
@@ -90,7 +94,11 @@ class CatalogDataSourceBase(Base):
     @classmethod
     def to_api_patch(cls, data_source_id: str, attributes: dict) -> JsonApiDataSourcePatchDocument:
         return JsonApiDataSourcePatchDocument(
-            data=JsonApiDataSourcePatch(id=data_source_id, attributes=JsonApiDataSourcePatchAttributes(**attributes))
+            data=JsonApiDataSourcePatch(
+                id=data_source_id,
+                type="dataSource",
+                attributes=JsonApiDataSourcePatchAttributes(**attributes),
+            )
         )
 
     def __eq__(self, other: Any) -> bool:

@@ -1,7 +1,7 @@
 # (C) 2022 GoodData Corporation
 from attrs import define
-from gooddata_api_client.model.data_source_parameter import DataSourceParameter
-from gooddata_api_client.model.parameter import Parameter
+from gooddata_api_client.models.data_source_parameter import DataSourceParameter
+from gooddata_api_client.models.parameter import Parameter
 
 from gooddata_sdk.catalog.base import Base
 

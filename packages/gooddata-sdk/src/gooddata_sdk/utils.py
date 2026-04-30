@@ -17,7 +17,7 @@ import yaml
 from cattrs import structure
 from cattrs.errors import ClassValidationError
 from gooddata_api_client import ApiAttributeError
-from gooddata_api_client.model_utils import OpenApiModel
+from pydantic import BaseModel as OpenApiModel
 
 from gooddata_sdk.compute.model.attribute import Attribute
 from gooddata_sdk.compute.model.base import ObjId
@@ -101,7 +101,7 @@ def load_all_entities(get_page_func: functools.partial[Any], page_size: int = 50
     >>> import gooddata_api_client.apis as apis
     >>> api = apis.EntitiesApi(api_client.ApiClient())
     >>> get_func = functools.partial(api.get_all_entities_visualization_objects, 'some-workspace-id',
-    >>>                              include=["ALL"], _check_return_type=False)
+    >>>                              include=["ALL"])
     >>> vis_objects = load_all_entities(get_func)
 
     :param get_page_func: an API controller from the metadata client
@@ -116,9 +116,14 @@ def load_all_entities(get_page_func: functools.partial[Any], page_size: int = 50
         all_paged_entities.data.extend(result.data)
 
         try:
-            all_paged_entities.included.extend(result.included)
-        except ApiAttributeError:
-            pass
+            included = result.included
+        except (ApiAttributeError, AttributeError):
+            # The v7 generator emits proper pydantic models; lists that have no
+            # ``included`` side-loads simply omit the attribute, raising
+            # ``AttributeError`` rather than the v6 ``ApiAttributeError``.
+            included = None
+        if included:
+            all_paged_entities.included.extend(included)
 
         if len(result.data) < page_size:
             break
@@ -138,7 +143,15 @@ def load_all_entities_dict(
 
 class SideLoads:
     def __init__(self, objs: list[Any]) -> None:
-        self._objects = dict([(f"{o['type']}/{o['id']}", o) for o in objs])
+        # Coerce v7 generated pydantic instances to plain dicts so existing
+        # ``o['type']`` / ``o['id']`` access patterns keep working.
+        coerced: list[Any] = []
+        for o in objs:
+            if hasattr(o, "model_dump") and not isinstance(o, dict):
+                coerced.append(o.model_dump(by_alias=True, exclude_none=False))
+            else:
+                coerced.append(o)
+        self._objects = dict([(f"{o['type']}/{o['id']}", o) for o in coerced])
 
     def find(self, id_obj: IdObjType) -> Union[Any, None]:
         id_obj_key = id_obj_to_key(id_obj)

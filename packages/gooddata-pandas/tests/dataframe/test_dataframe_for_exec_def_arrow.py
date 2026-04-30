@@ -1863,6 +1863,14 @@ def test_read_result_arrow_max_bytes_raises_when_exceeded() -> None:
     mock_response.read.return_value = payload
 
     mock_api_client = MagicMock()
+    # v7 split call_api into ``param_serialize`` + ``call_api``; stub both.
+    mock_api_client.param_serialize.return_value = (
+        "GET",
+        "http://localhost:3000/api/v1/actions/workspaces/ws/execution/afm/execute/result/result-id/binary",
+        {"Accept": "application/vnd.apache.arrow.stream"},
+        None,
+        None,
+    )
     mock_api_client.call_api.return_value = mock_response
 
     bare = object.__new__(BareExecutionResponse)

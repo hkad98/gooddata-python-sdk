@@ -1,7 +1,7 @@
 {
     "definition": {
-        "over_period_measure": {
-            "date_attributes": [
+        "overPeriodMeasure": {
+            "dateAttributes": [
                 {
                     "attribute": {
                         "identifier": {
@@ -9,7 +9,7 @@
                             "type": "attribute"
                         }
                     },
-                    "periods_ago": 1
+                    "periodsAgo": 1
                 },
                 {
                     "attribute": {
@@ -18,13 +18,13 @@
                             "type": "attribute"
                         }
                     },
-                    "periods_ago": 2
+                    "periodsAgo": 2
                 }
             ],
-            "measure_identifier": {
-                "local_identifier": "master_metric_id"
+            "measureIdentifier": {
+                "localIdentifier": "master_metric_id"
             }
         }
     },
-    "local_identifier": "local_id1"
+    "localIdentifier": "local_id1"
 }

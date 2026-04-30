@@ -7,7 +7,8 @@
                     "type": "label"
                 }
             },
-            "local_identifier": "attribute_local_id"
+            "localIdentifier": "attribute_local_id",
+            "showAllValues": false
         },
         {
             "label": {
@@ -16,32 +17,34 @@
                     "type": "label"
                 }
             },
-            "local_identifier": "attribute_local_id2"
+            "localIdentifier": "attribute_local_id2",
+            "showAllValues": false
         }
     ],
     "filters": [
         {
-            "positive_attribute_filter": {
-                "_in": {
+            "positiveAttributeFilter": {
+                "in": {
                     "values": [
                         "val1",
                         "val2"
                     ]
                 },
                 "label": {
-                    "local_identifier": "attribute_local_id"
+                    "localIdentifier": "attribute_local_id"
                 }
             }
         },
         {
-            "absolute_date_filter": {
-                "_from": "2021-07-01 18:23",
+            "absoluteDateFilter": {
                 "dataset": {
                     "identifier": {
                         "id": "dataset.id",
                         "type": "dataset"
                     }
                 },
+                "emptyValueHandling": "EXCLUDE",
+                "from": "2021-07-01 18:23",
                 "to": "2021-07-16 18:23"
             }
         }
@@ -50,7 +53,7 @@
         {
             "definition": {
                 "measure": {
-                    "compute_ratio": false,
+                    "computeRatio": false,
                     "filters": [],
                     "item": {
                         "identifier": {
@@ -60,12 +63,12 @@
                     }
                 }
             },
-            "local_identifier": "simple_metric_local_id"
+            "localIdentifier": "simple_metric_local_id"
         },
         {
             "definition": {
-                "over_period_measure": {
-                    "date_attributes": [
+                "overPeriodMeasure": {
+                    "dateAttributes": [
                         {
                             "attribute": {
                                 "identifier": {
@@ -73,20 +76,20 @@
                                     "type": "attribute"
                                 }
                             },
-                            "periods_ago": 1
+                            "periodsAgo": 1
                         }
                     ],
-                    "measure_identifier": {
-                        "local_identifier": "simple_metric_local_id"
+                    "measureIdentifier": {
+                        "localIdentifier": "simple_metric_local_id"
                     }
                 }
             },
-            "local_identifier": "local_id1"
+            "localIdentifier": "local_id1"
         },
         {
             "definition": {
-                "previous_period_measure": {
-                    "date_datasets": [
+                "previousPeriodMeasure": {
+                    "dateDatasets": [
                         {
                             "dataset": {
                                 "identifier": {
@@ -94,15 +97,15 @@
                                     "type": "dataset"
                                 }
                             },
-                            "periods_ago": 1
+                            "periodsAgo": 1
                         }
                     ],
-                    "measure_identifier": {
-                        "local_identifier": "simple_metric_local_id"
+                    "measureIdentifier": {
+                        "localIdentifier": "simple_metric_local_id"
                     }
                 }
             },
-            "local_identifier": "local_id1"
+            "localIdentifier": "local_id1"
         }
     ]
 }

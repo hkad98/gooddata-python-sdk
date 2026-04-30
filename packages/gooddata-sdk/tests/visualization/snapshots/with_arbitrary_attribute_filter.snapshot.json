@@ -7,13 +7,14 @@
                     "type": "label"
                 }
             },
-            "local_identifier": "a_label.opportunity.id.name"
+            "localIdentifier": "a_label.opportunity.id.name",
+            "showAllValues": false
         }
     ],
     "filters": [
         {
-            "positive_attribute_filter": {
-                "_in": {
+            "positiveAttributeFilter": {
+                "in": {
                     "values": [
                         "245519",
                         "237519",
@@ -29,14 +30,14 @@
             }
         },
         {
-            "negative_attribute_filter": {
+            "negativeAttributeFilter": {
                 "label": {
                     "identifier": {
                         "id": "attr.f_opportunitysnapshot.oppsnapshot",
                         "type": "label"
                     }
                 },
-                "not_in": {
+                "notIn": {
                     "values": [
                         "245519",
                         "237519"
@@ -49,7 +50,7 @@
         {
             "definition": {
                 "measure": {
-                    "compute_ratio": false,
+                    "computeRatio": false,
                     "filters": [],
                     "item": {
                         "identifier": {
@@ -59,7 +60,7 @@
                     }
                 }
             },
-            "local_identifier": "m_aangOxLSeztu"
+            "localIdentifier": "m_aangOxLSeztu"
         }
     ]
 }

@@ -6,14 +6,14 @@ from pathlib import Path
 from typing import Any, Union
 
 from gooddata_api_client.exceptions import NotFoundException
-from gooddata_api_client.model.analyze_csv_request import AnalyzeCsvRequest
-from gooddata_api_client.model.analyze_csv_request_item import AnalyzeCsvRequestItem
-from gooddata_api_client.model.analyze_csv_response import AnalyzeCsvResponse
-from gooddata_api_client.model.delete_files_request import DeleteFilesRequest
-from gooddata_api_client.model.import_csv_request import ImportCsvRequest
-from gooddata_api_client.model.import_csv_request_table import ImportCsvRequestTable
-from gooddata_api_client.model.import_csv_request_table_source import ImportCsvRequestTableSource
-from gooddata_api_client.model.import_csv_request_table_source_config import ImportCsvRequestTableSourceConfig
+from gooddata_api_client.models.analyze_csv_request import AnalyzeCsvRequest
+from gooddata_api_client.models.analyze_csv_request_item import AnalyzeCsvRequestItem
+from gooddata_api_client.models.analyze_csv_response import AnalyzeCsvResponse
+from gooddata_api_client.models.delete_files_request import DeleteFilesRequest
+from gooddata_api_client.models.import_csv_request import ImportCsvRequest
+from gooddata_api_client.models.import_csv_request_table import ImportCsvRequestTable
+from gooddata_api_client.models.import_csv_request_table_source import ImportCsvRequestTableSource
+from gooddata_api_client.models.import_csv_request_table_source_config import ImportCsvRequestTableSourceConfig
 
 from gooddata_sdk.catalog.catalog_service_base import CatalogServiceBase
 from gooddata_sdk.catalog.data_source.action_model.requests.ldm_request import (
@@ -87,9 +87,7 @@ class CatalogDataSourceService(CatalogServiceBase):
         Returns:
             CatalogDataSource: Data Source Object
         """
-        return CatalogDataSource.from_api(
-            self._entities_api.get_entity_data_sources(data_source_id).data.to_dict(camel_case=False)
-        )
+        return CatalogDataSource.from_api(self._entities_api.get_entity_data_sources(data_source_id).data)
 
     def delete_data_source(self, data_source_id: str) -> None:
         """Delete data source using Data Source id.
@@ -136,7 +134,6 @@ class CatalogDataSourceService(CatalogServiceBase):
         """
         get_data_sources = functools.partial(
             self._entities_api.get_all_entities_data_sources,
-            _check_return_type=False,
         )
         data_sources = load_all_entities_dict(get_data_sources)
         return [CatalogDataSource.from_api(ds) for ds in data_sources["data"]]
@@ -411,7 +408,7 @@ class CatalogDataSourceService(CatalogServiceBase):
                 List of schema names for the given data source specified by its id.
         """
         response = self._actions_api.get_data_source_schemata(data_source_id)
-        return response.get("schema_names", [])
+        return list(response.schema_names) if response.schema_names else []
 
     def scan_sql(self, data_source_id: str, sql_request: ScanSqlRequest) -> ScanSqlResponse:
         """Analyze SELECT SQL query in a given request.
@@ -536,7 +533,7 @@ class CatalogDataSourceService(CatalogServiceBase):
                 Analysis result with columns, preview data, and config.
         """
         request = AnalyzeCsvRequest(analyze_requests=[AnalyzeCsvRequestItem(location=location)])
-        responses = self._actions_api.analyze_csv(request, _check_return_type=False)
+        responses = self._actions_api.analyze_csv(request)
         return responses[0]
 
     def import_csv(

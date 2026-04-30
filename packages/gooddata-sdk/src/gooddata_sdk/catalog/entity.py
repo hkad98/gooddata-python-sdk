@@ -23,11 +23,11 @@ class AttrCatalogEntity:
     type: str = field(default=Factory(lambda self: self._get_type(), takes_self=True))
 
     def _get_type(self) -> str:
-        allowed_values = getattr(self.client_class(), "allowed_values")
-        if allowed_values:
-            values = list(allowed_values.get(("type",), {}).values())
-            if len(values) > 0:
-                return values[0]
+        from gooddata_sdk.catalog.base import allowed_values_for
+
+        values = allowed_values_for(self.client_class(), "type")
+        if values:
+            return values[0]
         raise ValueError(f"Unable to extract type from ${self.client_class().__name__}")
 
     # Optional, because write use case -
@@ -90,7 +90,10 @@ class AttrCatalogEntity:
 
 
 class CatalogEntity:
-    def __init__(self, entity: dict[str, Any]) -> None:
+    def __init__(self, entity: Any) -> None:
+        from gooddata_sdk.catalog.base import _api_to_dict
+
+        entity = _api_to_dict(entity)
         self._e = entity["attributes"]
         self._entity = entity
         self._obj_id = ObjId(self._entity["id"], type=self._entity["type"])

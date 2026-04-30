@@ -1,9 +1,9 @@
 {
-    "negative_attribute_filter": {
+    "negativeAttributeFilter": {
         "label": {
-            "local_identifier": "local_id"
+            "localIdentifier": "local_id"
         },
-        "not_in": {
+        "notIn": {
             "values": []
         }
     }

@@ -2,14 +2,15 @@
     "attributes": [],
     "filters": [
         {
-            "all_time_date_filter": {
+            "allTimeDateFilter": {
                 "dataset": {
                     "identifier": {
                         "id": "dataset.id",
                         "type": "dataset"
                     }
                 },
-                "empty_value_handling": "EXCLUDE"
+                "emptyValueHandling": "EXCLUDE",
+                "granularity": "DAY"
             }
         }
     ],
@@ -17,7 +18,7 @@
         {
             "definition": {
                 "measure": {
-                    "compute_ratio": false,
+                    "computeRatio": false,
                     "filters": [],
                     "item": {
                         "identifier": {
@@ -27,7 +28,7 @@
                     }
                 }
             },
-            "local_identifier": "simple_metric_local_id"
+            "localIdentifier": "simple_metric_local_id"
         }
     ]
 }

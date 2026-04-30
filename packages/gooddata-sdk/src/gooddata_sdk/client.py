@@ -7,7 +7,11 @@ from pathlib import Path
 
 import gooddata_api_client as api_client
 import requests
-from gooddata_api_client import apis
+from gooddata_api_client.api.actions_api import ActionsApi
+from gooddata_api_client.api.appearance_api import AppearanceApi
+from gooddata_api_client.api.entities_api import EntitiesApi
+from gooddata_api_client.api.layout_api import LayoutApi
+from gooddata_api_client.api.user_management_api import UserManagementApi
 
 from gooddata_sdk import __version__
 from gooddata_sdk.utils import HttpMethod
@@ -66,11 +70,11 @@ class GoodDataApiClient:
             self._api_client.default_headers[header_name] = header_value
         self._api_client.user_agent = user_agent
 
-        self._entities_api = apis.EntitiesApi(self._api_client)
-        self._layout_api = apis.LayoutApi(self._api_client)
-        self._actions_api = apis.ActionsApi(self._api_client)
-        self._user_management_api = apis.UserManagementApi(self._api_client)
-        self._appearance_api = apis.AppearanceApi(self._api_client)
+        self._entities_api = EntitiesApi(self._api_client)
+        self._layout_api = LayoutApi(self._api_client)
+        self._actions_api = ActionsApi(self._api_client)
+        self._user_management_api = UserManagementApi(self._api_client)
+        self._appearance_api = AppearanceApi(self._api_client)
         self._executions_cancellable = executions_cancellable
 
     def _do_post_request(
@@ -139,23 +143,23 @@ class GoodDataApiClient:
         return self._custom_headers
 
     @property
-    def entities_api(self) -> apis.EntitiesApi:
+    def entities_api(self) -> EntitiesApi:
         return self._entities_api
 
     @property
-    def layout_api(self) -> apis.LayoutApi:
+    def layout_api(self) -> LayoutApi:
         return self._layout_api
 
     @property
-    def actions_api(self) -> apis.ActionsApi:
+    def actions_api(self) -> ActionsApi:
         return self._actions_api
 
     @property
-    def user_management_api(self) -> apis.UserManagementApi:
+    def user_management_api(self) -> UserManagementApi:
         return self._user_management_api
 
     @property
-    def appearance_api(self) -> apis.AppearanceApi:
+    def appearance_api(self) -> AppearanceApi:
         return self._appearance_api
 
     @property

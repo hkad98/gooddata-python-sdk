@@ -77,8 +77,11 @@ def _default_organization_permissions(sdk: GoodDataSdk) -> None:
 
 
 def _validation_helper(class_type, attribute_name: str):
+    from gooddata_sdk.catalog.base import allowed_values_for
+
     client_class = class_type.client_class()
-    allowed_values = list(client_class.allowed_values.get((attribute_name,)).values())
+    allowed_values = allowed_values_for(client_class, attribute_name)
+    assert allowed_values, f"expected enum values on {client_class.__name__}.{attribute_name}"
     for allowed_value in allowed_values:
         class_type(name=allowed_value, assignee=CatalogAssigneeIdentifier(id="", type="user"))
     with pytest.raises(ValueError):
@@ -152,7 +155,7 @@ def test_get_declarative_permissions(test_config):
     catalog_declarative_permissions = sdk.catalog_permission.get_declarative_permissions(test_config["workspace"])
     declarative_permissions = layout_api.get_workspace_permissions(test_config["workspace"])
     _assert_default_permissions(catalog_declarative_permissions)
-    assert catalog_declarative_permissions.to_dict(camel_case=True) == declarative_permissions.to_dict(camel_case=True)
+    assert catalog_declarative_permissions.to_dict(camel_case=True) == declarative_permissions.to_dict()
 
 
 @gd_vcr.use_cassette(str(_fixtures_dir / "put_declarative_permissions.yaml"))

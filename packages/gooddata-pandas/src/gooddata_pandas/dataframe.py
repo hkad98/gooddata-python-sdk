@@ -683,7 +683,7 @@ class DataFrameFactory:
                 api_client=self._sdk.client,
                 workspace_id=self._workspace_id,
                 execution_response=models.AfmExecutionResponse(
-                    result_cache_metadata.execution_response, _check_type=False
+                    execution_response=result_cache_metadata.execution_response,
                 ),
             )
             table = exec_response.read_result_arrow(max_bytes=self._arrow_config.max_bytes)
@@ -694,7 +694,7 @@ class DataFrameFactory:
                 api_client=self._sdk.client,
                 workspace_id=self._workspace_id,
                 execution_response=models.AfmExecutionResponse(
-                    result_cache_metadata.execution_response, _check_type=False
+                    execution_response=result_cache_metadata.execution_response,
                 ),
             ),
             result_cache_metadata=result_cache_metadata,

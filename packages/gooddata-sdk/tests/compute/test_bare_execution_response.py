@@ -48,6 +48,15 @@ def _make_bare(ipc_bytes: bytes):
 
     mock_api_client = MagicMock()
     mock_response = _FakeResponse(ipc_bytes)
+    # v7 splits the legacy ``call_api`` into ``param_serialize`` (URL+headers
+    # builder) plus a smaller ``call_api`` that issues the request. Stub both.
+    mock_api_client.actions_api.api_client.param_serialize.return_value = (
+        "GET",
+        "http://localhost:3000/api/v1/actions/workspaces/ws-id/execution/afm/execute/result/result-id-123/binary",
+        {"Accept": "application/vnd.apache.arrow.stream"},
+        None,
+        None,
+    )
     mock_api_client.actions_api.api_client.call_api.return_value = mock_response
 
     afm_exec_response = {
@@ -84,8 +93,10 @@ def test_read_result_arrow_requests_stream_format() -> None:
 
     bare.read_result_arrow()
 
-    call_kwargs = bare._actions_api.api_client.call_api.call_args.kwargs
-    assert call_kwargs["header_params"]["Accept"] == "application/vnd.apache.arrow.stream"
+    # ``header_params`` is shaped by ``param_serialize`` in v7; assert against
+    # what the SDK actually passes in.
+    serialize_kwargs = bare._actions_api.api_client.param_serialize.call_args.kwargs
+    assert serialize_kwargs["header_params"]["Accept"] == "application/vnd.apache.arrow.stream"
 
 
 def test_read_result_arrow_without_cancel_token() -> None:
@@ -95,8 +106,8 @@ def test_read_result_arrow_without_cancel_token() -> None:
 
     bare.read_result_arrow()
 
-    call_kwargs = bare._actions_api.api_client.call_api.call_args.kwargs
-    assert "X-GDC-CANCEL-TOKEN" not in call_kwargs["header_params"]
+    serialize_kwargs = bare._actions_api.api_client.param_serialize.call_args.kwargs
+    assert "X-GDC-CANCEL-TOKEN" not in serialize_kwargs["header_params"]
 
 
 def test_read_result_arrow_no_pyarrow_raises() -> None:

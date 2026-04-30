@@ -6,15 +6,15 @@ from pathlib import Path
 from typing import Any
 
 from attrs import define, field
-from gooddata_api_client.model.declarative_filter_view import DeclarativeFilterView
-from gooddata_api_client.model.declarative_user_data_filter import DeclarativeUserDataFilter
-from gooddata_api_client.model.declarative_user_data_filters import DeclarativeUserDataFilters
-from gooddata_api_client.model.declarative_workspace import DeclarativeWorkspace
-from gooddata_api_client.model.declarative_workspace_data_filter import DeclarativeWorkspaceDataFilter
-from gooddata_api_client.model.declarative_workspace_data_filter_setting import DeclarativeWorkspaceDataFilterSetting
-from gooddata_api_client.model.declarative_workspace_data_filters import DeclarativeWorkspaceDataFilters
-from gooddata_api_client.model.declarative_workspace_model import DeclarativeWorkspaceModel
-from gooddata_api_client.model.declarative_workspaces import DeclarativeWorkspaces
+from gooddata_api_client.models.declarative_filter_view import DeclarativeFilterView
+from gooddata_api_client.models.declarative_user_data_filter import DeclarativeUserDataFilter
+from gooddata_api_client.models.declarative_user_data_filters import DeclarativeUserDataFilters
+from gooddata_api_client.models.declarative_workspace import DeclarativeWorkspace
+from gooddata_api_client.models.declarative_workspace_data_filter import DeclarativeWorkspaceDataFilter
+from gooddata_api_client.models.declarative_workspace_data_filter_setting import DeclarativeWorkspaceDataFilterSetting
+from gooddata_api_client.models.declarative_workspace_data_filters import DeclarativeWorkspaceDataFilters
+from gooddata_api_client.models.declarative_workspace_model import DeclarativeWorkspaceModel
+from gooddata_api_client.models.declarative_workspaces import DeclarativeWorkspaces
 
 from gooddata_sdk.catalog.base import Base
 from gooddata_sdk.catalog.identifier import (
@@ -96,18 +96,26 @@ class CatalogDeclarativeWorkspace(Base):
         return DeclarativeWorkspace
 
     def to_api(self, include_nested_structures: bool = True) -> DeclarativeWorkspace:
+        from gooddata_sdk.catalog.base import _backfill_type_constants, _restrict_fields_set_to_input
+        from gooddata_sdk.utils import change_case, snake_to_camel
+
         client_class = self.client_class()
         dictionary = self._get_snake_dict()
         if self.model is not None and not include_nested_structures:
             del dictionary["model"]
-        return client_class.from_dict(dictionary, camel_case=False)
+        # v7 ``from_dict`` reads camelCase keys; mirror :py:meth:`Base.to_api`.
+        camel_dict = change_case(dictionary, snake_to_camel)
+        _backfill_type_constants(camel_dict, client_class)
+        instance = client_class.from_dict(camel_dict)
+        _restrict_fields_set_to_input(instance, camel_dict)
+        return instance
 
     def store_to_disk(self, workspaces_folder: Path, sort: bool = False) -> None:
         workspace_folder = workspaces_folder / self.id
         file_path = workspace_folder / f"{self.id}.yaml"
         create_directory(workspace_folder)
 
-        workspace_dict = self.to_api(include_nested_structures=False).to_dict(camel_case=True)
+        workspace_dict = self.to_api(include_nested_structures=False).to_dict()
         write_layout_to_file(file_path, workspace_dict, sort=sort)
 
         if self.model is not None:
@@ -206,7 +214,7 @@ class CatalogDeclarativeWorkspaceDataFilter(Base):
 
     def store_to_disk(self, workspaces_data_filters_folder: Path, sort: bool = False) -> None:
         workspaces_data_filter_file = workspaces_data_filters_folder / f"{self.id}.yaml"
-        write_layout_to_file(workspaces_data_filter_file, self.to_api().to_dict(camel_case=True), sort=sort)
+        write_layout_to_file(workspaces_data_filter_file, self.to_api().to_dict(), sort=sort)
 
     @classmethod
     def load_from_disk(cls, workspaces_data_filter_file: Path) -> CatalogDeclarativeWorkspaceDataFilter:
@@ -224,7 +232,7 @@ class CatalogDeclarativeWorkspaceDataFilter(Base):
         Returns:
             CatalogDeclarativeWorkspaceDataFilter: CatalogDeclarativeWorkspaceDataFilter object.
         """
-        declarative_workspace_data_filter = DeclarativeWorkspaceDataFilter.from_dict(data, camel_case)
+        declarative_workspace_data_filter = DeclarativeWorkspaceDataFilter.from_dict(data)
         return cls.from_api(declarative_workspace_data_filter)
 
 
@@ -269,7 +277,7 @@ class CatalogDeclarativeUserDataFilter(Base):
 
     def store_to_disk(self, user_data_filters_folder: Path, sort: bool = False) -> None:
         user_data_filter_file = user_data_filters_folder / f"{self.id}.yaml"
-        write_layout_to_file(user_data_filter_file, self.to_api().to_dict(camel_case=True), sort=sort)
+        write_layout_to_file(user_data_filter_file, self.to_api().to_dict(), sort=sort)
 
     @classmethod
     def load_from_disk(cls, user_data_filter_file: Path) -> CatalogDeclarativeUserDataFilter:
@@ -308,7 +316,7 @@ class CatalogDeclarativeFilterView(Base):
 
     def store_to_disk(self, filter_views_folder: Path, sort: bool = False) -> None:
         filter_view_file = filter_views_folder / f"{self.id}.yaml"
-        write_layout_to_file(filter_view_file, self.to_api().to_dict(camel_case=True), sort=sort)
+        write_layout_to_file(filter_view_file, self.to_api().to_dict(), sort=sort)
 
     @classmethod
     def load_from_disk(cls, filter_view_file: Path) -> CatalogDeclarativeFilterView:

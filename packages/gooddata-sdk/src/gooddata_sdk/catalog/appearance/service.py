@@ -1,11 +1,9 @@
 # (C) 2026 GoodData Corporation
 from __future__ import annotations
 
-import functools
-
 from gooddata_api_client.exceptions import NotFoundException
-from gooddata_api_client.model.json_api_color_palette_in_document import JsonApiColorPaletteInDocument
-from gooddata_api_client.model.json_api_theme_in_document import JsonApiThemeInDocument
+from gooddata_api_client.models.json_api_color_palette_in_document import JsonApiColorPaletteInDocument
+from gooddata_api_client.models.json_api_theme_in_document import JsonApiThemeInDocument
 
 from gooddata_sdk.catalog.appearance.entity_model.color_palette import CatalogColorPalette
 from gooddata_sdk.catalog.appearance.entity_model.theme import CatalogTheme
@@ -28,7 +26,7 @@ class CatalogAppearanceService(CatalogServiceBase):
             list[CatalogTheme]:
                 List of themes in the current organization.
         """
-        get_themes = functools.partial(self._appearance_api.get_all_entities_themes, _check_return_type=False)
+        get_themes = self._appearance_api.get_all_entities_themes
         themes = load_all_entities(get_themes)
         return [CatalogTheme.from_api(theme) for theme in themes.data]
 
@@ -107,9 +105,7 @@ class CatalogAppearanceService(CatalogServiceBase):
             list[CatalogColorPalette]:
                 List of color palettes in the current organization.
         """
-        get_color_palettes = functools.partial(
-            self._appearance_api.get_all_entities_color_palettes, _check_return_type=False
-        )
+        get_color_palettes = self._appearance_api.get_all_entities_color_palettes
         color_palettes = load_all_entities(get_color_palettes)
         return [CatalogColorPalette.from_api(color_palette) for color_palette in color_palettes.data]
 

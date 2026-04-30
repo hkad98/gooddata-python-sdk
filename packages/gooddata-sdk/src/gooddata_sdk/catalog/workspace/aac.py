@@ -391,7 +391,7 @@ def store_aac_workspace_to_disk(model: CatalogDeclarativeWorkspaceModel, source_
     plugins/, attributeHierarchies/) under source_dir.
     """
     source_dir.mkdir(parents=True, exist_ok=True)
-    model_dict = model.to_dict(camel_case=True)
+    model_dict = model.to_dict()
 
     ldm = model_dict.get("ldm", {})
     analytics = model_dict.get("analytics", {})

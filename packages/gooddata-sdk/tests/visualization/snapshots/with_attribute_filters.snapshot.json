@@ -7,13 +7,14 @@
                     "type": "label"
                 }
             },
-            "local_identifier": "a_label.opportunity.id.name"
+            "localIdentifier": "a_label.opportunity.id.name",
+            "showAllValues": false
         }
     ],
     "filters": [
         {
-            "positive_attribute_filter": {
-                "_in": {
+            "positiveAttributeFilter": {
+                "in": {
                     "values": [
                         "element1",
                         "element2"
@@ -28,14 +29,14 @@
             }
         },
         {
-            "negative_attribute_filter": {
+            "negativeAttributeFilter": {
                 "label": {
                     "identifier": {
                         "id": "label.opportunity.id.name",
                         "type": "label"
                     }
                 },
-                "not_in": {
+                "notIn": {
                     "values": [
                         "element1",
                         "element2"
@@ -48,7 +49,7 @@
         {
             "definition": {
                 "measure": {
-                    "compute_ratio": false,
+                    "computeRatio": false,
                     "filters": [],
                     "item": {
                         "identifier": {
@@ -58,7 +59,7 @@
                     }
                 }
             },
-            "local_identifier": "m_aangOxLSeztu"
+            "localIdentifier": "m_aangOxLSeztu"
         }
     ]
 }

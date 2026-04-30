@@ -632,9 +632,13 @@ class VisualizationBucket:
 class Visualization:
     def __init__(
         self,
-        from_vis_obj: dict[str, Any],
+        from_vis_obj: Any,
         side_loads: SideLoads | None = None,
     ) -> None:
+        # v7 returns generated pydantic instances; coerce to a plain camelCase
+        # dict so the existing ``self._vo[...]`` access patterns keep working.
+        if hasattr(from_vis_obj, "model_dump") and not isinstance(from_vis_obj, dict):
+            from_vis_obj = from_vis_obj.model_dump(by_alias=True, exclude_none=False)
         self._vo = from_vis_obj
         self._attribute_filter_configs: list[VisualizationAttributeFilterConfig] | None = None
         self._buckets: list[VisualizationBucket] | None = None
@@ -806,7 +810,6 @@ class VisualizationService:
             self._entities_api.get_all_entities_visualization_objects,
             workspace_id,
             include=["ALL"],
-            _check_return_type=False,
         )
 
         vis_objects = load_all_entities(get_func)
@@ -837,7 +840,6 @@ class VisualizationService:
             workspace_id,
             object_id=visualization_id,
             include=["ALL"],
-            _check_return_type=False,
             _request_timeout=timeout,
         )
         side_loads = None

@@ -1,10 +1,10 @@
 {
-    "positive_attribute_filter": {
-        "_in": {
+    "positiveAttributeFilter": {
+        "in": {
             "values": []
         },
         "label": {
-            "local_identifier": "local_id"
+            "localIdentifier": "local_id"
         }
     }
 }

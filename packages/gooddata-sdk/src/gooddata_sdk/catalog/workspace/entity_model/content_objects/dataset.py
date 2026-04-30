@@ -4,11 +4,11 @@ from __future__ import annotations
 from typing import Any, Union, cast
 
 from attrs import Factory, define, evolve, field
-from gooddata_api_client.model.json_api_aggregated_fact_out import JsonApiAggregatedFactOut
-from gooddata_api_client.model.json_api_attribute_out import JsonApiAttributeOut
-from gooddata_api_client.model.json_api_dataset_out import JsonApiDatasetOut
-from gooddata_api_client.model.json_api_fact_out import JsonApiFactOut
-from gooddata_api_client.model.json_api_label_out import JsonApiLabelOut
+from gooddata_api_client.models.json_api_aggregated_fact_out import JsonApiAggregatedFactOut
+from gooddata_api_client.models.json_api_attribute_out import JsonApiAttributeOut
+from gooddata_api_client.models.json_api_dataset_out import JsonApiDatasetOut
+from gooddata_api_client.models.json_api_fact_out import JsonApiFactOut
+from gooddata_api_client.models.json_api_label_out import JsonApiLabelOut
 
 from gooddata_sdk.catalog.entity import AttrCatalogEntity
 from gooddata_sdk.catalog.types import ValidObjects

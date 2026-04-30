@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Union
 
 import gooddata_api_client.models as afm_models
-from gooddata_api_client.model_utils import OpenApiModel
+from pydantic import BaseModel as OpenApiModel
 
 
 class ObjId:
@@ -25,25 +25,31 @@ class ObjId:
             identifier=afm_models.AfmObjectIdentifierIdentifier(id=self._id, type=self._type)
         )
 
+    def as_afm_id_core(self) -> afm_models.AfmObjectIdentifierCore:
+        return afm_models.AfmObjectIdentifierCore(
+            identifier=afm_models.AfmObjectIdentifierCoreIdentifier(id=self._id, type=self._type)
+        )
+
     def as_afm_id_label(self) -> afm_models.AfmObjectIdentifierLabel:
         return afm_models.AfmObjectIdentifierLabel(
-            identifier=afm_models.AfmObjectIdentifierLabelIdentifier(id=self._id)
+            identifier=afm_models.AfmObjectIdentifierLabelIdentifier(id=self._id, type="label")
         )
 
     def as_afm_id_dataset(self) -> afm_models.AfmObjectIdentifierDataset:
         return afm_models.AfmObjectIdentifierDataset(
-            identifier=afm_models.AfmObjectIdentifierDatasetIdentifier(id=self._id)
+            identifier=afm_models.AfmObjectIdentifierDatasetIdentifier(id=self._id, type="dataset")
         )
 
     def as_afm_id_attribute(self) -> afm_models.AfmObjectIdentifierAttribute:
         return afm_models.AfmObjectIdentifierAttribute(
-            identifier=afm_models.AfmObjectIdentifierAttributeIdentifier(id=self._id)
+            identifier=afm_models.AfmObjectIdentifierAttributeIdentifier(id=self._id, type="attribute")
         )
 
-    def as_identifier(self) -> afm_models.AfmIdentifier:
-        return afm_models.AfmIdentifier(
+    def as_identifier(self) -> afm_models.AfmObjectIdentifier:
+        # Returns the inner ``AfmObjectIdentifier`` payload; callers wrap it in
+        # the v7 ``AfmIdentifier`` oneOf envelope when the API expects that.
+        return afm_models.AfmObjectIdentifier(
             identifier=afm_models.AfmObjectIdentifierIdentifier(id=self._id, type=self._type),
-            _check_type=False,
         )
 
     def __eq__(self, other: object) -> bool:

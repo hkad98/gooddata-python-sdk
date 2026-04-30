@@ -1,8 +1,8 @@
 {
-    "ranking_filter": {
+    "rankingFilter": {
         "dimensionality": [
             {
-                "local_identifier": "local_id3"
+                "localIdentifier": "local_id3"
             },
             {
                 "identifier": {
@@ -13,10 +13,10 @@
         ],
         "measures": [
             {
-                "local_identifier": "local_id1"
+                "localIdentifier": "local_id1"
             },
             {
-                "local_identifier": "local_id2"
+                "localIdentifier": "local_id2"
             }
         ],
         "operator": "TOP",

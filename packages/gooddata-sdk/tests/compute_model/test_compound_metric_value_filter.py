@@ -21,13 +21,13 @@ def test_compound_metric_value_filter_to_api_model():
 
     assert f.is_noop() is False
     assert f.as_api_model().to_dict() == {
-        "compound_measure_value_filter": {
+        "compoundMeasureValueFilter": {
             "conditions": [
                 {"comparison": {"operator": "GREATER_THAN", "value": 10.0}},
-                {"range": {"_from": 2.0, "operator": "BETWEEN", "to": 3.0}},
+                {"range": {"from": 2.0, "operator": "BETWEEN", "to": 3.0}},
             ],
-            "measure": {"local_identifier": "local_id1"},
-            "treat_null_values_as": 0,
+            "measure": {"localIdentifier": "local_id1"},
+            "treatNullValuesAs": 0,
         }
     }
 

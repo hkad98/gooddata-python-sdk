@@ -1,10 +1,10 @@
 {
-    "comparison_measure_value_filter": {
+    "comparisonMeasureValueFilter": {
         "measure": {
-            "local_identifier": "local_id1"
+            "localIdentifier": "local_id1"
         },
         "operator": "EQUAL_TO",
-        "treat_null_values_as": 1,
+        "treatNullValuesAs": 1,
         "value": 10.0
     }
 }

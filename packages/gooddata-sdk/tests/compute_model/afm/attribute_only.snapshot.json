@@ -7,7 +7,8 @@
                     "type": "label"
                 }
             },
-            "local_identifier": "attribute_local_id"
+            "localIdentifier": "attribute_local_id",
+            "showAllValues": false
         }
     ],
     "filters": [],

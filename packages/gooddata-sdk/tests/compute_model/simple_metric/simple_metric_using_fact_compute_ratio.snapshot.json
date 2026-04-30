@@ -2,7 +2,7 @@
     "definition": {
         "measure": {
             "aggregation": "SUM",
-            "compute_ratio": true,
+            "computeRatio": true,
             "filters": [],
             "item": {
                 "identifier": {
@@ -12,5 +12,5 @@
             }
         }
     },
-    "local_identifier": "test"
+    "localIdentifier": "test"
 }

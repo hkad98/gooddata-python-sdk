@@ -7,7 +7,8 @@
                     "type": "label"
                 }
             },
-            "local_identifier": "a_label.product.id.name"
+            "localIdentifier": "a_label.product.id.name",
+            "showAllValues": false
         }
     ],
     "filters": [],
@@ -15,7 +16,7 @@
         {
             "definition": {
                 "measure": {
-                    "compute_ratio": false,
+                    "computeRatio": false,
                     "filters": [],
                     "item": {
                         "identifier": {
@@ -25,12 +26,12 @@
                     }
                 }
             },
-            "local_identifier": "m_acugFHNJgsBy"
+            "localIdentifier": "m_acugFHNJgsBy"
         },
         {
             "definition": {
                 "measure": {
-                    "compute_ratio": false,
+                    "computeRatio": false,
                     "filters": [],
                     "item": {
                         "identifier": {
@@ -40,23 +41,23 @@
                     }
                 }
             },
-            "local_identifier": "m_aangOxLSeztu"
+            "localIdentifier": "m_aangOxLSeztu"
         },
         {
             "definition": {
-                "arithmetic_measure": {
-                    "measure_identifiers": [
+                "arithmeticMeasure": {
+                    "measureIdentifiers": [
                         {
-                            "local_identifier": "m_aangOxLSeztu"
+                            "localIdentifier": "m_aangOxLSeztu"
                         },
                         {
-                            "local_identifier": "m_acugFHNJgsBy"
+                            "localIdentifier": "m_acugFHNJgsBy"
                         }
                     ],
                     "operator": "DIFFERENCE"
                 }
             },
-            "local_identifier": "m_358184a8_f72796b0fbc7c0dc4d17a1e68c1a9933"
+            "localIdentifier": "m_358184a8_f72796b0fbc7c0dc4d17a1e68c1a9933"
         }
     ]
 }

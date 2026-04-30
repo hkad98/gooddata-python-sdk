@@ -7,7 +7,7 @@ from unittest import mock
 from unittest.mock import MagicMock
 
 import pytest
-from gooddata_api_client.model.json_api_data_source_in_attributes import JsonApiDataSourceInAttributes
+from gooddata_api_client.models.json_api_data_source_in_attributes import JsonApiDataSourceInAttributes
 from gooddata_sdk import (
     BasicCredentials,
     CatalogDataSource,
@@ -615,9 +615,9 @@ def test_declarative_data_sources_databricks_client_secret(test_config):
     sdk.catalog_data_source.test_data_sources_connection(data_sources_e, credentials_path)
     args, kwargs = sdk._client._actions_api.test_data_source_definition.call_args
     assert len(args) == 1
-    assert args[0]._data_store["url"] == data_sources_e.data_sources[0].url
-    assert args[0]._data_store["client_id"] == data_sources_e.data_sources[0].client_id
-    assert args[0]._data_store["client_secret"] == test_config["databricks_client_secret"]
+    assert args[0].url == data_sources_e.data_sources[0].url
+    assert args[0].client_id == data_sources_e.data_sources[0].client_id
+    assert args[0].client_secret == test_config["databricks_client_secret"]
 
 
 @gd_vcr.use_cassette(str(_fixtures_dir / "demo_test_declarative_data_sources_databricks_token.yaml"))
@@ -633,8 +633,8 @@ def test_declarative_data_sources_databricks_token(test_config):
     sdk.catalog_data_source.test_data_sources_connection(data_sources_e, credentials_path)
     args, kwargs = sdk._client._actions_api.test_data_source_definition.call_args
     assert len(args) == 1
-    assert args[0]._data_store["url"] == data_sources_e.data_sources[0].url
-    assert args[0]._data_store["token"] == test_config["databricks_token"]
+    assert args[0].url == data_sources_e.data_sources[0].url
+    assert args[0].token == test_config["databricks_token"]
 
 
 @gd_vcr.use_cassette(str(_fixtures_dir / "demo_cache_strategy.yaml"))
@@ -791,8 +791,11 @@ def test_catalog_create_data_source_greenplum_spec(test_config):
 
 
 def test_allowed_data_source_type(test_config):
-    allowed_types = JsonApiDataSourceInAttributes.allowed_values.get(("type",))
-    for t in allowed_types.values():
+    from gooddata_sdk.catalog.base import allowed_values_for
+
+    allowed_types = allowed_values_for(JsonApiDataSourceInAttributes, "type")
+    assert allowed_types, "expected enum values on JsonApiDataSourceInAttributes.type"
+    for t in allowed_types:
         CatalogDataSource(
             id="test",
             name="Test2",

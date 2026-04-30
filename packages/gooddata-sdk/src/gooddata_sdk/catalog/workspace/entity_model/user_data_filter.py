@@ -4,12 +4,12 @@ from __future__ import annotations
 from typing import Any, Union
 
 from attrs import define
-from gooddata_api_client.model.json_api_user_data_filter_in import JsonApiUserDataFilterIn
-from gooddata_api_client.model.json_api_user_data_filter_in_attributes import JsonApiUserDataFilterInAttributes
-from gooddata_api_client.model.json_api_user_data_filter_in_document import JsonApiUserDataFilterInDocument
-from gooddata_api_client.model.json_api_user_data_filter_in_relationships import JsonApiUserDataFilterInRelationships
-from gooddata_api_client.model.json_api_user_data_filter_post_optional_id import JsonApiUserDataFilterPostOptionalId
-from gooddata_api_client.model.json_api_user_data_filter_post_optional_id_document import (
+from gooddata_api_client.models.json_api_user_data_filter_in import JsonApiUserDataFilterIn
+from gooddata_api_client.models.json_api_user_data_filter_in_attributes import JsonApiUserDataFilterInAttributes
+from gooddata_api_client.models.json_api_user_data_filter_in_document import JsonApiUserDataFilterInDocument
+from gooddata_api_client.models.json_api_user_data_filter_in_relationships import JsonApiUserDataFilterInRelationships
+from gooddata_api_client.models.json_api_user_data_filter_post_optional_id import JsonApiUserDataFilterPostOptionalId
+from gooddata_api_client.models.json_api_user_data_filter_post_optional_id_document import (
     JsonApiUserDataFilterPostOptionalIdDocument,
 )
 
@@ -86,9 +86,13 @@ class CatalogUserDataFilter(Base):
         attributes = self.attributes.to_api()
         relationships = self.relationships.to_api() if self.relationships is not None else None
         if post:
-            return JsonApiUserDataFilterPostOptionalId(id=self.id, attributes=attributes, relationships=relationships)
+            return JsonApiUserDataFilterPostOptionalId(
+                id=self.id, type="userDataFilter", attributes=attributes, relationships=relationships
+            )
         else:
-            return JsonApiUserDataFilterIn(id=self.id, attributes=attributes, relationships=relationships)
+            return JsonApiUserDataFilterIn(
+                id=self.id, type="userDataFilter", attributes=attributes, relationships=relationships
+            )
 
     @property
     def user_id(self) -> Union[str, None]:

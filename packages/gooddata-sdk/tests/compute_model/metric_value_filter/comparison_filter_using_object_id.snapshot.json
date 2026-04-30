@@ -1,5 +1,5 @@
 {
-    "comparison_measure_value_filter": {
+    "comparisonMeasureValueFilter": {
         "measure": {
             "identifier": {
                 "id": "metric.id",

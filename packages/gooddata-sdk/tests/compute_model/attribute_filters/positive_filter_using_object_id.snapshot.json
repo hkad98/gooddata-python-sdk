@@ -1,6 +1,6 @@
 {
-    "positive_attribute_filter": {
-        "_in": {
+    "positiveAttributeFilter": {
+        "in": {
             "values": [
                 "val1",
                 "val2"

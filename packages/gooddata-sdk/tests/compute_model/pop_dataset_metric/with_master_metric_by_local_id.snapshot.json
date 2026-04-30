@@ -1,7 +1,7 @@
 {
     "definition": {
-        "previous_period_measure": {
-            "date_datasets": [
+        "previousPeriodMeasure": {
+            "dateDatasets": [
                 {
                     "dataset": {
                         "identifier": {
@@ -9,13 +9,13 @@
                             "type": "dataset"
                         }
                     },
-                    "periods_ago": 1
+                    "periodsAgo": 1
                 }
             ],
-            "measure_identifier": {
-                "local_identifier": "master_metric_id"
+            "measureIdentifier": {
+                "localIdentifier": "master_metric_id"
             }
         }
     },
-    "local_identifier": "local_id1"
+    "localIdentifier": "local_id1"
 }

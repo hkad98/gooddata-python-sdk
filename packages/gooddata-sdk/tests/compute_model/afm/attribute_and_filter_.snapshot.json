@@ -7,20 +7,21 @@
                     "type": "label"
                 }
             },
-            "local_identifier": "attribute_local_id"
+            "localIdentifier": "attribute_local_id",
+            "showAllValues": false
         }
     ],
     "filters": [
         {
-            "positive_attribute_filter": {
-                "_in": {
+            "positiveAttributeFilter": {
+                "in": {
                     "values": [
                         "val1",
                         "val2"
                     ]
                 },
                 "label": {
-                    "local_identifier": "attribute_local_id"
+                    "localIdentifier": "attribute_local_id"
                 }
             }
         }

@@ -1,9 +1,9 @@
 # (C) 2023 GoodData Corporation
 
 from attrs import define
-from gooddata_api_client.model.available_assignees import AvailableAssignees
-from gooddata_api_client.model.user_assignee import UserAssignee
-from gooddata_api_client.model.user_group_assignee import UserGroupAssignee
+from gooddata_api_client.models.available_assignees import AvailableAssignees
+from gooddata_api_client.models.user_assignee import UserAssignee
+from gooddata_api_client.models.user_group_assignee import UserGroupAssignee
 
 from gooddata_sdk.catalog.base import Base
 

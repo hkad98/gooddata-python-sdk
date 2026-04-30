@@ -1,7 +1,7 @@
 {
     "definition": {
         "measure": {
-            "compute_ratio": false,
+            "computeRatio": false,
             "filters": [],
             "item": {
                 "identifier": {
@@ -11,5 +11,5 @@
             }
         }
     },
-    "local_identifier": "test"
+    "localIdentifier": "test"
 }

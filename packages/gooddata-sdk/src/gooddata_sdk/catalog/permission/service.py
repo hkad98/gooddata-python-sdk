@@ -65,7 +65,7 @@ class CatalogPermissionService(CatalogServiceBase):
                 Object containing users and user groups
         """
         return CatalogAvailableAssignees.from_dict(
-            self._actions_api.available_assignees(workspace_id, dashboard_id, _check_return_type=False),
+            self._actions_api.available_assignees(workspace_id, dashboard_id),
             camel_case=False,
         )
 
@@ -83,7 +83,7 @@ class CatalogPermissionService(CatalogServiceBase):
                 Object containing users and user groups and granted dashboard permissions
         """
         return CatalogDashboardPermissions.from_dict(
-            self._actions_api.dashboard_permissions(workspace_id, dashboard_id, _check_return_type=False),
+            self._actions_api.dashboard_permissions(workspace_id, dashboard_id),
             camel_case=False,
         )
 
@@ -113,7 +113,6 @@ class CatalogPermissionService(CatalogServiceBase):
             workspace_id,
             dashboard_id,
             [permission.to_api() for permission in permissions_for_assignee],
-            _check_return_type=False,
         )
 
     def get_declarative_organization_permissions(self) -> list[CatalogDeclarativeOrganizationPermission]:
@@ -160,4 +159,4 @@ class CatalogPermissionService(CatalogServiceBase):
             None
         """
         permissions = [permission.to_api() for permission in organization_permission_assignments]
-        self._actions_api.manage_organization_permissions(permissions, _check_return_type=False)
+        self._actions_api.manage_organization_permissions(permissions)

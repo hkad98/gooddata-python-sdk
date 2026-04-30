@@ -9,6 +9,7 @@ resolution-markers = [
 
 [manifest]
 members = [
+    "gooddata-api-client",
     "gooddata-dbt",
     "gooddata-fdw",
     "gooddata-flexconnect",
@@ -787,17 +788,21 @@ trusted-deps = [
 
 [[package]]
 name = "gooddata-api-client"
-version = "1.64.0"
-source = { editable = "gooddata-api-client" }
+version = "2.0.0"
+source = { editable = "packages/gooddata-api-client" }
 dependencies = [
+    { name = "pydantic" },
     { name = "python-dateutil" },
+    { name = "typing-extensions" },
     { name = "urllib3" },
 ]
 
 [package.metadata]
 requires-dist = [
-    { name = "python-dateutil" },
-    { name = "urllib3", specifier = ">=2.6.1" },
+    { name = "pydantic", specifier = ">=2.11" },
+    { name = "python-dateutil", specifier = ">=2.8.2" },
+    { name = "typing-extensions", specifier = ">=4.7.1" },
+    { name = "urllib3", specifier = ">=2.1.0,<3.0.0" },
 ]
 
 [[package]]
@@ -1120,7 +1125,7 @@ type = [
 
 [package.metadata]
 requires-dist = [
-    { name = "gooddata-api-client", editable = "gooddata-api-client" },
+    { name = "gooddata-api-client", editable = "packages/gooddata-api-client" },
     { name = "gooddata-dbt", editable = "packages/gooddata-dbt" },
     { name = "gooddata-fdw", editable = "packages/gooddata-fdw" },
     { name = "gooddata-flexconnect", editable = "packages/gooddata-flexconnect" },
@@ -1205,7 +1210,7 @@ requires-dist = [
     { name = "attrs", specifier = ">=21.4.0,<=24.2.0" },
     { name = "brotli", specifier = "==1.2.0" },
     { name = "cattrs", specifier = ">=22.1.0,<=24.1.1" },
-    { name = "gooddata-api-client", editable = "gooddata-api-client" },
+    { name = "gooddata-api-client", editable = "packages/gooddata-api-client" },
     { name = "gooddata-code-convertors" },
     { name = "pyarrow", marker = "extra == 'arrow'", specifier = ">=23.0.1" },
     { name = "python-dateutil", specifier = ">=2.5.3" },

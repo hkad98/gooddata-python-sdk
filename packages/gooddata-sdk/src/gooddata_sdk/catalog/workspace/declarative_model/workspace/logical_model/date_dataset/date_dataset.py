@@ -4,8 +4,8 @@ from __future__ import annotations
 from pathlib import Path
 
 from attrs import define
-from gooddata_api_client.model.declarative_date_dataset import DeclarativeDateDataset
-from gooddata_api_client.model.granularities_formatting import GranularitiesFormatting
+from gooddata_api_client.models.declarative_date_dataset import DeclarativeDateDataset
+from gooddata_api_client.models.granularities_formatting import GranularitiesFormatting
 
 from gooddata_sdk.catalog.base import Base
 from gooddata_sdk.utils import read_layout_from_file, write_layout_to_file
@@ -28,7 +28,7 @@ class CatalogDeclarativeDateDataset(Base):
 
     def store_to_disk(self, date_instances_folder: Path, sort: bool = False) -> None:
         date_instance_file = date_instances_folder / f"{self.id}.yaml"
-        write_layout_to_file(date_instance_file, self.to_api().to_dict(camel_case=True), sort=sort)
+        write_layout_to_file(date_instance_file, self.to_api().to_dict(), sort=sort)
 
     @classmethod
     def load_from_disk(cls, date_instance_file: Path) -> CatalogDeclarativeDateDataset:

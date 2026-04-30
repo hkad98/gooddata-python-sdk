@@ -5,12 +5,14 @@ import functools
 from typing import Any, Union
 
 from attrs import Factory, define, field
-from gooddata_api_client.model.json_api_organization_setting_in_attributes import JsonApiOrganizationSettingInAttributes
-from gooddata_api_client.model.json_api_workspace_setting_in import JsonApiWorkspaceSettingIn
-from gooddata_api_client.model.json_api_workspace_setting_in_document import JsonApiWorkspaceSettingInDocument
-from gooddata_api_client.model.json_api_workspace_setting_out import JsonApiWorkspaceSettingOut
-from gooddata_api_client.model.json_api_workspace_setting_post_optional_id import JsonApiWorkspaceSettingPostOptionalId
-from gooddata_api_client.model.json_api_workspace_setting_post_optional_id_document import (
+from gooddata_api_client.models.json_api_organization_setting_in_attributes import (
+    JsonApiOrganizationSettingInAttributes,
+)
+from gooddata_api_client.models.json_api_workspace_setting_in import JsonApiWorkspaceSettingIn
+from gooddata_api_client.models.json_api_workspace_setting_in_document import JsonApiWorkspaceSettingInDocument
+from gooddata_api_client.models.json_api_workspace_setting_out import JsonApiWorkspaceSettingOut
+from gooddata_api_client.models.json_api_workspace_setting_post_optional_id import JsonApiWorkspaceSettingPostOptionalId
+from gooddata_api_client.models.json_api_workspace_setting_post_optional_id_document import (
     JsonApiWorkspaceSettingPostOptionalIdDocument,
 )
 
@@ -48,15 +50,20 @@ class CatalogWorkspaceSetting(Base):
             )
         if post:
             return JsonApiWorkspaceSettingPostOptionalIdDocument(
-                data=JsonApiWorkspaceSettingPostOptionalId(id=self.id, attributes=self._attributes())
+                data=JsonApiWorkspaceSettingPostOptionalId(
+                    id=self.id, type="workspaceSetting", attributes=self._attributes()
+                )
             )
         else:
             return JsonApiWorkspaceSettingInDocument(
-                data=JsonApiWorkspaceSettingIn(id=self.id, attributes=self._attributes())
+                data=JsonApiWorkspaceSettingIn(id=self.id, type="workspaceSetting", attributes=self._attributes())
             )
 
     @classmethod
-    def from_api(cls, entity: dict[str, Any]) -> CatalogWorkspaceSetting:
+    def from_api(cls, entity: Any) -> CatalogWorkspaceSetting:
+        from gooddata_sdk.catalog.base import _api_to_dict
+
+        entity = _api_to_dict(entity)
         return cls(
             id=entity["id"],
             setting_type=entity["attributes"]["type"],

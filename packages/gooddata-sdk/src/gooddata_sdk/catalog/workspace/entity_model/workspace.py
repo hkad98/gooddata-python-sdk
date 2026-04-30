@@ -4,14 +4,14 @@ from __future__ import annotations
 from typing import Any
 
 from attrs import Factory, define, field
-from gooddata_api_client.model.json_api_workspace_automation_out_relationships_workspace import (
+from gooddata_api_client.models.json_api_workspace_automation_out_relationships_workspace import (
     JsonApiWorkspaceAutomationOutRelationshipsWorkspace,
 )
-from gooddata_api_client.model.json_api_workspace_in import JsonApiWorkspaceIn
-from gooddata_api_client.model.json_api_workspace_in_attributes import JsonApiWorkspaceInAttributes
-from gooddata_api_client.model.json_api_workspace_in_document import JsonApiWorkspaceInDocument
-from gooddata_api_client.model.json_api_workspace_in_relationships import JsonApiWorkspaceInRelationships
-from gooddata_api_client.model.json_api_workspace_to_one_linkage import JsonApiWorkspaceToOneLinkage
+from gooddata_api_client.models.json_api_workspace_in import JsonApiWorkspaceIn
+from gooddata_api_client.models.json_api_workspace_in_attributes import JsonApiWorkspaceInAttributes
+from gooddata_api_client.models.json_api_workspace_in_document import JsonApiWorkspaceInDocument
+from gooddata_api_client.models.json_api_workspace_in_relationships import JsonApiWorkspaceInRelationships
+from gooddata_api_client.models.json_api_workspace_to_one_linkage import JsonApiWorkspaceToOneLinkage
 
 from gooddata_sdk.catalog.base import Base
 from gooddata_sdk.utils import safeget
@@ -26,7 +26,10 @@ class CatalogWorkspace(Base):
     description: str | None = field(default=None)
 
     @classmethod
-    def from_api(cls, entity: dict[str, Any]) -> CatalogWorkspace:
+    def from_api(cls, entity: Any) -> CatalogWorkspace:
+        from gooddata_sdk.catalog.base import _api_to_dict
+
+        entity = _api_to_dict(entity)
         ea = entity["attributes"]
         er = entity.get("relationships")
         return cls(
@@ -53,6 +56,7 @@ class CatalogWorkspace(Base):
         return JsonApiWorkspaceInDocument(
             data=JsonApiWorkspaceIn(
                 id=self.id,
+                type="workspace",
                 attributes=JsonApiWorkspaceInAttributes(**attributes_dict),
                 **kwargs,
             )

@@ -11,9 +11,9 @@ if TYPE_CHECKING:
 from attrs import define, field
 from attrs.setters import frozen as frozen_attr
 from gooddata_api_client import models
-from gooddata_api_client.model.afm import AFM
-from gooddata_api_client.model.afm_cancel_tokens import AfmCancelTokens
-from gooddata_api_client.model.result_spec import ResultSpec
+from gooddata_api_client.models.afm import AFM
+from gooddata_api_client.models.afm_cancel_tokens import AfmCancelTokens
+from gooddata_api_client.models.result_spec import ResultSpec
 
 try:
     import pyarrow as _pyarrow
@@ -119,8 +119,10 @@ class ExecutionDefinition:
     def _create_value_sort_key(self, sort_key: dict) -> models.SortKey:
         sort_key_value = sort_key["value"]
         return models.SortKey(
-            value=models.SortKeyValueValue(
-                data_column_locators=sort_key_value["dataColumnLocators"], direction=sort_key_value["direction"]
+            actual_instance=models.SortKeyValue(
+                value=models.SortKeyValueValue(
+                    data_column_locators=sort_key_value["dataColumnLocators"], direction=sort_key_value["direction"]
+                )
             )
         )
 
@@ -130,17 +132,20 @@ class ExecutionDefinition:
         # Don't send it to execution to prevent override of possible default sort label direction.
         # It has the same meaning as TigerSortDirection.DEFAULT which does not exist.
         if sort_key_attribute["direction"] == "ASC":
-            return models.SortKey(
+            inner = models.SortKeyAttribute(
                 attribute=models.SortKeyAttributeAttribute(
                     attribute_identifier=sort_key_attribute["attributeIdentifier"],
                     sort_type=sort_key_attribute["sortType"],
                 )
             )
+            return models.SortKey(actual_instance=inner)
         return models.SortKey(
-            attribute=models.SortKeyAttributeAttribute(
-                attribute_identifier=sort_key_attribute["attributeIdentifier"],
-                direction=sort_key_attribute["direction"],
-                sort_type=sort_key_attribute["sortType"],
+            actual_instance=models.SortKeyAttribute(
+                attribute=models.SortKeyAttributeAttribute(
+                    attribute_identifier=sort_key_attribute["attributeIdentifier"],
+                    direction=sort_key_attribute["direction"],
+                    sort_type=sort_key_attribute["sortType"],
+                )
             )
         )
 
@@ -233,11 +238,19 @@ class ResultSizeDimensionsLimitsExceeded(Exception):
 
 class ExecutionResult:
     def __init__(self, result: models.ExecutionResult):
-        self._data: list[Any] = result["data"]
-        self._headers: list[models.DimensionHeader] = result["dimension_headers"]
-        self._grand_totals: list[models.ExecutionResultGrandTotal] = result["grand_totals"]
-        self._paging: models.ExecutionResultPaging = result["paging"]
-        self._metadata: models.ExecutionResultMetadata = result["metadata"]
+        # v7 returns a pydantic ``ExecutionResult`` instance; flatten to a
+        # camelCase dict so the rest of this class can keep its dict-style
+        # access patterns (``result["headerGroups"]`` etc.) without rippling
+        # attribute access through every property.
+        if isinstance(result, models.ExecutionResult.__mro__[0]) and hasattr(result, "model_dump"):
+            result_dict = result.model_dump(by_alias=True, exclude_none=False)
+        else:
+            result_dict = result
+        self._data: list[Any] = result_dict["data"]
+        self._headers: list[models.DimensionHeader] = result_dict["dimensionHeaders"]
+        self._grand_totals: list[models.ExecutionResultGrandTotal] = result_dict["grandTotals"]
+        self._paging: models.ExecutionResultPaging = result_dict["paging"]
+        self._metadata: models.ExecutionResultMetadata = result_dict["metadata"]
 
     @property
     def data(self) -> list[Any]:
@@ -325,7 +338,16 @@ class BareExecutionResponse:
         self._actions_api = self._api_client.actions_api
         self._workspace_id = workspace_id
 
-        self._exec_response: models.ExecutionResponse = execution_response["execution_response"]
+        # Accept both the v7 pydantic ``AfmExecutionResponse`` instance and a
+        # plain dict-shaped ``{"execution_response": {...}}`` (used by tests
+        # and the bare-execution path that bypasses the typed wrapper).
+        if hasattr(execution_response, "execution_response"):
+            inner = execution_response.execution_response
+            # by_alias=True so nested dict keys stay in the wire format
+            # (``executionResult`` etc.) that callers expect.
+            self._exec_response = inner.model_dump(by_alias=True, exclude_none=False) if inner is not None else None
+        else:
+            self._exec_response = execution_response["execution_response"]
         self._afm_exec_response = execution_response
         self._cancel_token = cancel_token
 
@@ -362,16 +384,16 @@ class BareExecutionResponse:
         # this makes sure that offset gets defaulted to start of result
         _offset = [0 for _ in _limit] if _limit is not None and _offset is None else _offset
 
-        execution_result, _, http_headers = self._actions_api.retrieve_result(
+        api_response = self._actions_api.retrieve_result_with_http_info(
             workspace_id=self._workspace_id,
             result_id=self.result_id,
             offset=_offset,
             limit=_limit,
-            _check_return_type=False,
-            _return_http_data_only=False,
             _request_timeout=timeout,
             **({"x_gdc_cancel_token": self.cancel_token} if self.cancel_token else {}),
         )
+        execution_result = api_response.data
+        http_headers = api_response.headers
         custom_headers = self._api_client.custom_headers
         if "X-GDC-TRACE-ID" in custom_headers and "X-GDC-TRACE-ID" in http_headers:
             logger.info(
@@ -403,14 +425,22 @@ class BareExecutionResponse:
         if self.cancel_token:
             header_params["X-GDC-CANCEL-TOKEN"] = self.cancel_token
 
-        response = self._actions_api.api_client.call_api(
-            resource_path="/api/v1/actions/workspaces/{workspaceId}/execution/afm/execute/result/{resultId}/binary",
+        # v7's ``api_client.call_api`` no longer builds the request itself —
+        # ``param_serialize`` constructs the full URL/headers/body tuple, then
+        # ``call_api`` issues the request with ``preload_content=False`` baked
+        # in (RESTResponse is returned in streamable form).
+        method, url, header_params, body, post_params = self._actions_api.api_client.param_serialize(
             method="GET",
+            resource_path="/api/v1/actions/workspaces/{workspaceId}/execution/afm/execute/result/{resultId}/binary",
             path_params={"workspaceId": self._workspace_id, "resultId": self.result_id},
             header_params=header_params,
-            response_type=None,
-            _preload_content=False,
-            _return_http_data_only=True,
+        )
+        response = self._actions_api.api_client.call_api(
+            method,
+            url,
+            header_params=header_params,
+            body=body,
+            post_params=post_params,
         )
         try:
             if max_bytes is not None:
@@ -598,5 +628,41 @@ def compute_model_to_api_model(
     return models.AFM(
         attributes=[a.as_api_model() for a in attributes] if attributes is not None else [],
         measures=[m.as_api_model() for m in metrics] if metrics is not None else [],
-        filters=[f.as_api_model() for f in filters if not f.is_noop()] if filters is not None else [],
+        filters=(
+            [_wrap_afm_filter(f.as_api_model()) for f in filters if not f.is_noop()] if filters is not None else []
+        ),
     )
+
+
+def _wrap_afm_filter(api_filter: Any) -> models.AFMFiltersInner:
+    """Pack a leaf filter into the v7 oneOf envelopes used by ``AFM.filters``.
+
+    The v7 schema nests filters through several oneOf wrappers:
+
+    ``AFMFiltersInner`` ⊂ ``FilterDefinitionForSimpleMeasure`` ⊂ ``AttributeFilter``
+    or ``DateFilter`` (or ``AbstractMeasureValueFilter`` ⊂ ``AFMFiltersInner``,
+    or ``InlineFilterDefinition`` ⊂ ``AFMFiltersInner``).
+    """
+    inline_cls = models.InlineFilterDefinition
+    abstract_measure_value_cls_names = {
+        "ComparisonMeasureValueFilter",
+        "CompoundMeasureValueFilter",
+        "RangeMeasureValueFilter",
+        "RankingFilter",
+    }
+    attribute_cls_names = {"MatchAttributeFilter", "NegativeAttributeFilter", "PositiveAttributeFilter"}
+    date_cls_names = {"AbsoluteDateFilter", "AllTimeDateFilter", "RelativeDateFilter"}
+    name = type(api_filter).__name__
+    if isinstance(api_filter, inline_cls):
+        return models.AFMFiltersInner(actual_instance=api_filter)
+    if name in abstract_measure_value_cls_names:
+        return models.AFMFiltersInner(actual_instance=models.AbstractMeasureValueFilter(actual_instance=api_filter))
+    if name in attribute_cls_names:
+        attr = models.AttributeFilter(actual_instance=api_filter)
+        simple = models.FilterDefinitionForSimpleMeasure(actual_instance=attr)
+        return models.AFMFiltersInner(actual_instance=simple)
+    if name in date_cls_names:
+        date = models.DateFilter(actual_instance=api_filter)
+        simple = models.FilterDefinitionForSimpleMeasure(actual_instance=date)
+        return models.AFMFiltersInner(actual_instance=simple)
+    raise TypeError(f"Unhandled AFM filter type: {name}")

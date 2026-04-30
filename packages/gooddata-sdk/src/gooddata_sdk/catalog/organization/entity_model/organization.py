@@ -4,12 +4,12 @@ from __future__ import annotations
 from typing import Any
 
 from attrs import define
-from gooddata_api_client.model.json_api_identity_provider_to_one_linkage import JsonApiIdentityProviderToOneLinkage
-from gooddata_api_client.model.json_api_organization_in import JsonApiOrganizationIn
-from gooddata_api_client.model.json_api_organization_in_attributes import JsonApiOrganizationInAttributes
-from gooddata_api_client.model.json_api_organization_in_document import JsonApiOrganizationInDocument
-from gooddata_api_client.model.json_api_organization_in_relationships import JsonApiOrganizationInRelationships
-from gooddata_api_client.model.json_api_organization_in_relationships_identity_provider import (
+from gooddata_api_client.models.json_api_identity_provider_to_one_linkage import JsonApiIdentityProviderToOneLinkage
+from gooddata_api_client.models.json_api_organization_in import JsonApiOrganizationIn
+from gooddata_api_client.models.json_api_organization_in_attributes import JsonApiOrganizationInAttributes
+from gooddata_api_client.models.json_api_organization_in_document import JsonApiOrganizationInDocument
+from gooddata_api_client.models.json_api_organization_in_relationships import JsonApiOrganizationInRelationships
+from gooddata_api_client.models.json_api_organization_in_relationships_identity_provider import (
     JsonApiOrganizationInRelationshipsIdentityProvider,
 )
 
@@ -43,7 +43,13 @@ class CatalogOrganization(Base):
         return JsonApiOrganizationIn
 
     @classmethod
-    def from_api(cls, entity: dict[str, Any]) -> CatalogOrganization:
+    def from_api(cls, entity: Any) -> CatalogOrganization:
+        # The v7 generator returns proper pydantic instances rather than
+        # dict-like models; coerce to a snake_case dict so the downstream
+        # ``safeget`` / ``entity.get`` calls work uniformly.
+        from gooddata_sdk.catalog.base import _api_to_dict
+
+        entity = _api_to_dict(entity)
         ea = entity.get("attributes", {})
         er = entity.get("relationships", {})
 

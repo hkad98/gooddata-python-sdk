@@ -1,8 +1,8 @@
 # (C) 2024 GoodData Corporation
 
 from attrs import define
-from gooddata_api_client.model.declarative_export_definition import DeclarativeExportDefinition
-from gooddata_api_client.model.declarative_export_definition_request_payload import (
+from gooddata_api_client.models.declarative_export_definition import DeclarativeExportDefinition
+from gooddata_api_client.models.declarative_export_definition_request_payload import (
     DeclarativeExportDefinitionRequestPayload,
 )
 

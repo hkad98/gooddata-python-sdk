@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import Any
 
 from attrs import define, field
-from gooddata_api_client.model.scan_request import ScanRequest
+from gooddata_api_client.models.scan_request import ScanRequest
 
 from gooddata_sdk.catalog.base import Base
 

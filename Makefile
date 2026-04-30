@@ -63,11 +63,13 @@ _api-client-generate:
 	rm -f schemas/gooddata-api-client.json
 	cat schemas/gooddata-*.json | jq -S -s 'reduce .[] as $$item ({}; . * $$item) + { tags : ( reduce .[].tags as $$item (null; . + $$item) | unique_by(.name) ) }' | sed '/\u0000/d' > "schemas/gooddata-api-client.json"
 	$(call generate_client,api)
-	# OpenAPI Generator drops the \x00 literal from regex patterns like ^[^\x00]*$,
-	# producing the invalid Python regex ^[^]*$.  Restore the null-byte escape.
-	find gooddata-api-client/gooddata_api_client -name '*.py' -exec \
-		sed -i.bak 's/\^\[\^\]\*\$$/^[^\\x00]*$$/g' {} + && \
-		find gooddata-api-client/gooddata_api_client -name '*.py.bak' -delete
+	# v7 ``python`` generator emits per-model ``to_dict`` that excludes
+	# ``readOnly`` fields. The recorded VCR cassettes were captured against the
+	# v6 generator which sent those fields on the wire (e.g. workspace ``name``
+	# echoed back on permission assignments). Re-route api-client request
+	# serialization through pydantic's full ``model_dump`` so readOnly fields
+	# survive — keeps cassettes byte-compatible.
+	uv run python scripts/postgen_api_client.py packages/gooddata-api-client/gooddata_api_client
 
 .PHONY: api-client
 api-client: download _api-client-generate

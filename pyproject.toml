@@ -28,10 +28,9 @@ gooddata-flight-server = { workspace = true }
 gooddata-flexconnect = { workspace = true }
 gooddata-pipelines = { workspace = true }
 tests-support = { workspace = true }
-gooddata-api-client = { path = "gooddata-api-client", editable = true }
+gooddata-api-client = { workspace = true }
 
 [tool.uv.workspace]
-# note gooddata-api-client is not a workspace package, it is a dependency of other packages
 members = ["packages/*"]
 
 [dependency-groups]
@@ -84,7 +83,7 @@ exclude = [
     ".tox",
     "build",
     "dist",
-    "gooddata-api-client",
+    "packages/gooddata-api-client",
 ]
 line-length = 120
 lint.select = [
@@ -123,7 +122,7 @@ target-version = "py310"
 "packages/gooddata-flexconnect/src/gooddata_flexconnect/__init__.py" = ["F401"]
 
 [tool.ruff.format]
-exclude = ['(gooddata-api-client|.*\.snapshot\..*)']
+exclude = ['(packages/gooddata-api-client|.*\.snapshot\..*)']
 # use ruff to format code examples in docstrings as well
 docstring-code-format = true
 
@@ -166,7 +165,7 @@ search = 'version = "{current_version}"'
 
 [[tool.tbump.file]]
 # clients setup.py
-src = "gooddata-*-client/setup.py"
+src = "packages/gooddata-*-client/setup.py"
 search = "VERSION = \"{current_version}\""
 
 [[tool.tbump.file]]
@@ -231,19 +230,19 @@ search = "gooddata-flight-server~={current_version}"
 
 [[tool.tbump.file]]
 # clients README
-src = "gooddata-*-client/README.md"
+src = "packages/gooddata-*-client/README.md"
 
 [[tool.tbump.file]]
 # clients user agent
-src = "gooddata-*-client/gooddata_*_client/api_client.py"
+src = "packages/gooddata-*-client/gooddata_*_client/api_client.py"
 
 [[tool.tbump.file]]
 # clients config
-src = "gooddata-*-client/gooddata_*_client/configuration.py"
+src = "packages/gooddata-*-client/gooddata_*_client/configuration.py"
 
 [[tool.tbump.file]]
 # clients __init__.py
-src = "gooddata-*-client/gooddata_*_client/__init__.py"
+src = "packages/gooddata-*-client/gooddata_*_client/__init__.py"
 
 [[tool.tbump.file]]
 # clients generator configs

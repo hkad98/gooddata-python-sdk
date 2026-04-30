@@ -4,8 +4,8 @@ from __future__ import annotations
 from typing import Any
 
 from attrs import define
-from gooddata_api_client.model.json_api_color_palette_in import JsonApiColorPaletteIn
-from gooddata_api_client.model.json_api_color_palette_in_attributes import JsonApiColorPaletteInAttributes
+from gooddata_api_client.models.json_api_color_palette_in import JsonApiColorPaletteIn
+from gooddata_api_client.models.json_api_color_palette_in_attributes import JsonApiColorPaletteInAttributes
 
 from gooddata_sdk.catalog.base import Base
 

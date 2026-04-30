@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from attrs import define
-from gooddata_api_client.model.scan_sql_response import ScanSqlResponse as ApiScanSqlResponse
+from gooddata_api_client.models.scan_sql_response import ScanSqlResponse as ApiScanSqlResponse
 
 from gooddata_sdk.catalog.base import Base
 from gooddata_sdk.catalog.data_source.action_model.sql_column import SqlColumn

@@ -2,14 +2,15 @@
     "attributes": [],
     "filters": [
         {
-            "relative_date_filter": {
-                "_from": -10,
+            "relativeDateFilter": {
                 "dataset": {
                     "identifier": {
                         "id": "closed.dt",
                         "type": "dataset"
                     }
                 },
+                "emptyValueHandling": "EXCLUDE",
+                "from": -10,
                 "granularity": "DAY",
                 "to": -1
             }
@@ -19,7 +20,7 @@
         {
             "definition": {
                 "measure": {
-                    "compute_ratio": false,
+                    "computeRatio": false,
                     "filters": [],
                     "item": {
                         "identifier": {
@@ -29,12 +30,12 @@
                     }
                 }
             },
-            "local_identifier": "m_aangOxLSeztu"
+            "localIdentifier": "m_aangOxLSeztu"
         },
         {
             "definition": {
-                "over_period_measure": {
-                    "date_attributes": [
+                "overPeriodMeasure": {
+                    "dateAttributes": [
                         {
                             "attribute": {
                                 "identifier": {
@@ -42,15 +43,15 @@
                                     "type": "attribute"
                                 }
                             },
-                            "periods_ago": 1
+                            "periodsAgo": 1
                         }
                     ],
-                    "measure_identifier": {
-                        "local_identifier": "m_aangOxLSeztu"
+                    "measureIdentifier": {
+                        "localIdentifier": "m_aangOxLSeztu"
                     }
                 }
             },
-            "local_identifier": "m_pop"
+            "localIdentifier": "m_pop"
         }
     ]
 }

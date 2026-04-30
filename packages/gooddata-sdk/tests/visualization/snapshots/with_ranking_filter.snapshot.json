@@ -7,20 +7,21 @@
                     "type": "label"
                 }
             },
-            "local_identifier": "a_label.opportunity.id.name"
+            "localIdentifier": "a_label.opportunity.id.name",
+            "showAllValues": false
         }
     ],
     "filters": [
         {
-            "ranking_filter": {
+            "rankingFilter": {
                 "dimensionality": [
                     {
-                        "local_identifier": "a_label.opportunity.id.name"
+                        "localIdentifier": "a_label.opportunity.id.name"
                     }
                 ],
                 "measures": [
                     {
-                        "local_identifier": "aangOxLSeztu"
+                        "localIdentifier": "aangOxLSeztu"
                     }
                 ],
                 "operator": "TOP",
@@ -32,7 +33,7 @@
         {
             "definition": {
                 "measure": {
-                    "compute_ratio": false,
+                    "computeRatio": false,
                     "filters": [],
                     "item": {
                         "identifier": {
@@ -42,7 +43,7 @@
                     }
                 }
             },
-            "local_identifier": "m_aangOxLSeztu"
+            "localIdentifier": "m_aangOxLSeztu"
         }
     ]
 }

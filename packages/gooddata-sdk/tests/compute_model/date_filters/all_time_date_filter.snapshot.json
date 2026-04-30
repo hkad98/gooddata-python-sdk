@@ -1,11 +1,12 @@
 {
-    "all_time_date_filter": {
+    "allTimeDateFilter": {
         "dataset": {
             "identifier": {
                 "id": "dataset.id",
                 "type": "dataset"
             }
         },
-        "empty_value_handling": "EXCLUDE"
+        "emptyValueHandling": "EXCLUDE",
+        "granularity": "DAY"
     }
 }

@@ -2,10 +2,10 @@
 from __future__ import annotations
 
 from attrs import define
-from gooddata_api_client.model.json_api_jwk_in import JsonApiJwkIn
-from gooddata_api_client.model.json_api_jwk_in_attributes import JsonApiJwkInAttributes
-from gooddata_api_client.model.json_api_jwk_in_attributes_content import JsonApiJwkInAttributesContent
-from gooddata_api_client.model.json_api_jwk_in_document import JsonApiJwkInDocument
+from gooddata_api_client.models.json_api_jwk_in import JsonApiJwkIn
+from gooddata_api_client.models.json_api_jwk_in_attributes import JsonApiJwkInAttributes
+from gooddata_api_client.models.json_api_jwk_in_document import JsonApiJwkInDocument
+from gooddata_api_client.models.rsa_specification import RsaSpecification as JsonApiJwkInAttributesContent
 
 from gooddata_sdk.catalog.base import Base
 
@@ -22,6 +22,7 @@ class CatalogJwkDocument(Base):
 @define(kw_only=True)
 class CatalogJwk(Base):
     id: str
+    type: str = "jwk"
     attributes: CatalogJwkAttributes | None = None
 
     @staticmethod

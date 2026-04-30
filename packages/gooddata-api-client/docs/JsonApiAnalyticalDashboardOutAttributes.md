@@ -1,0 +1,39 @@
+# JsonApiAnalyticalDashboardOutAttributes
+
+
+## Properties
+
+Name | Type | Description | Notes
+------------ | ------------- | ------------- | -------------
+**are_relations_valid** | **bool** |  | [optional] 
+**certification** | **str** | Certification status of the entity. | [optional] 
+**certification_message** | **str** | Optional message associated with the certification. | [optional] 
+**certified_at** | **datetime** | Time when the certification was set. | [optional] 
+**content** | **object** | Free-form JSON content. Maximum supported length is 250000 characters. | 
+**created_at** | **datetime** | Time of the entity creation. | [optional] 
+**description** | **str** |  | [optional] 
+**modified_at** | **datetime** | Time of the last entity modification. | [optional] 
+**summary** | **str** | AI-generated summary of the dashboard content | [optional] 
+**tags** | **List[str]** |  | [optional] 
+**title** | **str** |  | [optional] 
+
+## Example
+
+```python
+from gooddata_api_client.models.json_api_analytical_dashboard_out_attributes import JsonApiAnalyticalDashboardOutAttributes
+
+# TODO update the JSON string below
+json = "{}"
+# create an instance of JsonApiAnalyticalDashboardOutAttributes from a JSON string
+json_api_analytical_dashboard_out_attributes_instance = JsonApiAnalyticalDashboardOutAttributes.from_json(json)
+# print the JSON string representation of the object
+print(JsonApiAnalyticalDashboardOutAttributes.to_json())
+
+# convert the object into a dict
+json_api_analytical_dashboard_out_attributes_dict = json_api_analytical_dashboard_out_attributes_instance.to_dict()
+# create an instance of JsonApiAnalyticalDashboardOutAttributes from a dict
+json_api_analytical_dashboard_out_attributes_from_dict = JsonApiAnalyticalDashboardOutAttributes.from_dict(json_api_analytical_dashboard_out_attributes_dict)
+```
+[[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
+
