@@ -7,17 +7,7 @@ project:
 telemetry:
   scope: 'off'
 
-# Scope the scan to the published gooddata-* workspace packages + the
-# generated gooddata-api-client. Each pyproject.toml is scanned independently
-# (FOSSA's pdm strategy reports declared deps); the gooddata-api-client setup.py
-# is read by setuptools. Internal helpers (tests-support, scripts) are excluded.
-paths:
-  only:
-    - packages/gooddata-sdk
-    - packages/gooddata-pandas
-    - packages/gooddata-dbt
-    - packages/gooddata-fdw
-    - packages/gooddata-flight-server
-    - packages/gooddata-flexconnect
-    - packages/gooddata-pipelines
-    - gooddata-api-client
+# Per-package paths.only is injected at scan time by .github/workflows/fossa.yaml
+# so each package's deps land under its own fossa_gd_* branch in the FOSSA UI.
+# This anchor file exists for local `fossa analyze` runs and to satisfy
+# fossa-action's expectation of a config file in the repo root.

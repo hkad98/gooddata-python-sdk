@@ -3,34 +3,53 @@ name: FOSSA scan
 
 on:
   workflow_dispatch:
-    inputs:
-      branch:
-        description: Branch label to attach to the FOSSA scan.
-        required: false
-        default: master
 
 concurrency:
   group: fossa-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Replicates the legacy Jenkins flow: one FOSSA project (gooddata-python-sdk),
+# one scan per package uploaded under its own fossa_gd_* branch label so the
+# FOSSA dashboard separates dependencies per package.
 jobs:
   fossa:
-    name: FOSSA scan
+    name: FOSSA ${{ matrix.package.branch }}
     runs-on:
       group: infra1-runners-arc
       labels: runners-small
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        package:
+          - { path: packages/gooddata-sdk,           branch: fossa_gd_sdk }
+          - { path: packages/gooddata-pandas,        branch: fossa_gd_pandas }
+          - { path: packages/gooddata-dbt,           branch: fossa_gd_dbt }
+          - { path: packages/gooddata-fdw,           branch: fossa_gd_fdw }
+          - { path: packages/gooddata-flight-server, branch: fossa_gd_flight_server }
+          - { path: packages/gooddata-flexconnect,   branch: fossa_gd_flexconnect }
+          - { path: packages/gooddata-pipelines,     branch: fossa_gd_pipelines }
+          - { path: gooddata-api-client,             branch: fossa_gd_api_client }
     steps:
       - name: Checkout the code
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - name: Check that .fossa.yml exists
+      - name: Scope .fossa.yml to ${{ matrix.package.path }}
         shell: bash
         run: |
-          [ -f ./.fossa.yml ] || { echo "Missing .fossa.yml in repo root; FOSSA needs it for project id." >&2; exit 1; }
+          cat > .fossa.yml <<EOF
+          version: 3
+          project:
+            id: gooddata-python-sdk
+          telemetry:
+            scope: 'off'
+          paths:
+            only:
+              - ${{ matrix.package.path }}
+          EOF
 
       - name: Workaround for "no targets found" error
         shell: bash
@@ -41,10 +60,11 @@ jobs:
         uses: fossas/fossa-action@v1.9.0
         with:
           api-key: ${{ secrets.FOSSA_API_KEY }}
-          branch: ${{ inputs.branch }}
+          branch: ${{ matrix.package.branch }}
 
       - name: Run FOSSA test (policy gate)
         uses: fossas/fossa-action@v1.9.0
         with:
           api-key: ${{ secrets.FOSSA_API_KEY }}
           run-tests: true
+          branch: ${{ matrix.package.branch }}
