@@ -6205,7 +6205,7 @@ gooddata-api-client/setup.py
 gooddata-api-client/tox.ini
   s_fbdfea3fc53dce::t_6fa300467ce94d 1-9
 uv.lock
-  s_fbdfea3fc53dce::t_537d49e689df5c 778,780,786-789,918,1052,1220,1255,1274,3109,3111,3113
+  s_fbdfea3fc53dce::t_537d49e689df5c 778,780,786-789,918,1052,1131,1220,1255,1265,1274,1485,3109,3111,3113,3490,3492,3494
 ---
 {
   "schema_version": "authorship/3.0.0",
