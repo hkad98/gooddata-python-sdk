@@ -11,7 +11,7 @@ packages/gooddata-eval/pyproject.toml
 .sonar.settings
   s_1d4010ed2063e2::t_4eef89a1c609d1 4
 packages/gooddata-eval/src/gooddata_eval/core/agentic/_langfuse.py
-  s_1d4010ed2063e2::t_4eef89a1c609d1 12,233,285
+  s_1d4010ed2063e2::t_4eef89a1c609d1 12,14,233,271,285,325
 packages/gooddata-pipelines/tox.ini
   s_1d4010ed2063e2::t_4eef89a1c609d1 3
 packages/gooddata-eval/tests/test_agentic_observe_experiment.py
@@ -38,13 +38,13 @@ packages/gooddata-pandas/README.md
 packages/gooddata-eval/tests/_fake_langfuse.py
   s_1d4010ed2063e2::t_4eef89a1c609d1 16,39
 packages/gooddata-eval/src/gooddata_eval/cli/main.py
-  s_1d4010ed2063e2::t_4eef89a1c609d1 8,501
+  s_1d4010ed2063e2::t_4eef89a1c609d1 8,501,519
 packages/gooddata-eval/tests/test_trace_linker.py
   s_1d4010ed2063e2::t_4eef89a1c609d1 10,477,512
 packages/gooddata-eval/tox.ini
   s_1d4010ed2063e2::t_4eef89a1c609d1 3
 packages/gooddata-eval/src/gooddata_eval/core/langfuse/sink.py
-  s_1d4010ed2063e2::t_4eef89a1c609d1 8,111
+  s_1d4010ed2063e2::t_4eef89a1c609d1 8,111,118
 packages/gooddata-fdw/README.md
   s_1d4010ed2063e2::t_4eef89a1c609d1 14
 packages/gooddata-pandas/tox.ini
@@ -52,33 +52,33 @@ packages/gooddata-pandas/tox.ini
 packages/gooddata-flexconnect/pyproject.toml
   s_1d4010ed2063e2::t_4eef89a1c609d1 29,45
 packages/gooddata-eval/src/gooddata_eval/core/langfuse/client.py
-  s_1d4010ed2063e2::t_4eef89a1c609d1 12,105
+  s_1d4010ed2063e2::t_4eef89a1c609d1 12,15,105,144
 packages/gooddata-eval/src/gooddata_eval/core/reporting/html_report.py
-  s_1d4010ed2063e2::t_4eef89a1c609d1 16,110
+  s_1d4010ed2063e2::t_4eef89a1c609d1 16,17,110,171
 CONTRIBUTING.md
   s_1d4010ed2063e2::t_4eef89a1c609d1 5,175,188,387,389
 packages/gooddata-eval/tests/test_langfuse_client.py
-  s_1d4010ed2063e2::t_4eef89a1c609d1 7,47,280
+  s_1d4010ed2063e2::t_4eef89a1c609d1 7,47,280,288
 AGENTS.md
   s_1d4010ed2063e2::t_4eef89a1c609d1 8,89
 packages/gooddata-eval/tests/test_langfuse_experiment.py
   s_1d4010ed2063e2::t_4eef89a1c609d1 5,37-38,50-51,60-61,72-73,88-89,104-105,119-120,127-128,141-142,162-163
 packages/gooddata-eval/src/gooddata_eval/core/agentic/_trace_linker.py
-  s_1d4010ed2063e2::t_4eef89a1c609d1 20,96
+  s_1d4010ed2063e2::t_4eef89a1c609d1 20,96,103
 packages/gooddata-fdw/pyproject.toml
   s_1d4010ed2063e2::t_4eef89a1c609d1 27,39
 packages/gooddata-eval/tests/test_agentic_general_question.py
-  s_1d4010ed2063e2::t_4eef89a1c609d1 6,453
+  s_1d4010ed2063e2::t_4eef89a1c609d1 6,453,460
 packages/gooddata-eval/src/gooddata_eval/core/langfuse/observations.py
   s_1d4010ed2063e2::t_4eef89a1c609d1 6,26
 packages/gooddata-dbt/pyproject.toml
   s_1d4010ed2063e2::t_4eef89a1c609d1 11,27
 packages/gooddata-eval/tests/test_langfuse_observations.py
-  s_1d4010ed2063e2::t_4eef89a1c609d1 4,75-76,110-111,136,150,166,180,198,215,236,251,262
+  s_1d4010ed2063e2::t_4eef89a1c609d1 4,75-76,110-111,116-117,136,150,151-152,166,177,180,191,198,207,215,221,236,239,251,256,262,277,292,303
 packages/gooddata-eval/src/gooddata_eval/core/dataset/from_insights.py
-  s_1d4010ed2063e2::t_4eef89a1c609d1 23,294
+  s_1d4010ed2063e2::t_4eef89a1c609d1 23,294,298
 packages/gooddata-eval/tests/test_langfuse_otlp.py
-  s_1d4010ed2063e2::t_4eef89a1c609d1 6,41,47,52,120-121,152-153
+  s_1d4010ed2063e2::t_4eef89a1c609d1 6,41,42,47,48,52,53,120-121,121-122,152-153,153-154
 packages/gooddata-eval/src/gooddata_eval/core/langfuse/otlp.py
   s_1d4010ed2063e2::t_4eef89a1c609d1 10,46,60
 packages/gooddata-fdw/tox.ini

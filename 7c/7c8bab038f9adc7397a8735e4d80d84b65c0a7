@@ -9,7 +9,7 @@ packages/gooddata-pandas/tests/dataframe/test_dataframe_for_exec_def_arrow.py
   s_1d4010ed2063e2::t_272bd3b820ddec 109-111
   s_1d4010ed2063e2::t_6c74e0426d36c7 112-114
 uv.lock
-  s_1d4010ed2063e2::t_23c0cc8a30cf25 5-13,1217,1883-1885,1967-1972,2184,2190-2250
+  s_1d4010ed2063e2::t_23c0cc8a30cf25 5-13,1217,1883-1885,1967-1972,2184,2190-2250,2190-2191
 ---
 {
   "schema_version": "authorship/3.0.0",
