@@ -1,5 +1,7 @@
 uv.lock
   s_4ebf5b0db0c571::t_11f60c4224219e 1624,1626-1732,1806-1929,2480,2488,2490,2495,2500-2627
+scripts/next_dev_version.py
+  s_4ebf5b0db0c571::t_436cdb8dc3ec2f 23
 ---
 {
   "schema_version": "authorship/3.0.0",

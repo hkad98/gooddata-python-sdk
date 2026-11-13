@@ -11,7 +11,7 @@ packages/gooddata-pandas/tests/dataframe/test_dataframe_for_exec_def_arrow.py
   s_1d4010ed2063e2::t_6c74e0426d36c7 112-114
 uv.lock
   s_1d4010ed2063e2::t_23c0cc8a30cf25 5-13,1217,1252,1883-1885,1918-1920,1967-1972,2002-2007,2184,2190-2250,2190-2191,2225-2226
-  s_1d4010ed2063e2::t_b2511e83cec4b7 3,1711,1746,2187,2222,2697,2732
+  s_1d4010ed2063e2::t_b2511e83cec4b7 3,1711,1746,1883,2187,2222,2697,2732
 packages/gooddata-sdk/tox.ini
   s_1d4010ed2063e2::t_4eef89a1c609d1 3
 packages/gooddata-eval/tests/test_agentic_langfuse_trace.py
@@ -31,7 +31,7 @@ packages/gooddata-eval/tests/test_agentic_observe_experiment.py
 pyproject.toml
   s_1d4010ed2063e2::t_4eef89a1c609d1 6,143-144,146
 ci_tests.mk
-  s_1d4010ed2063e2::t_4eef89a1c609d1 2,54-55
+  s_1d4010ed2063e2::t_4eef89a1c609d1 2,54-55,54-56
   s_1d4010ed2063e2::t_32a01a4abe6265 57
 packages/gooddata-flight-server/pyproject.toml
   s_1d4010ed2063e2::t_4eef89a1c609d1 29,47
