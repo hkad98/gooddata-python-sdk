@@ -14,7 +14,8 @@ packages/gooddata-fdw/tox.ini
 packages/gooddata-flight-server/tox.ini
   s_4ebf5b0db0c571::t_c77847a7912f67 3
 packages/gooddata-pandas/pyproject.toml
-  s_4ebf5b0db0c571::t_c77847a7912f67 46
+  s_4ebf5b0db0c571::t_c77847a7912f67 45,46
+  s_4ebf5b0db0c571::t_abc9f6d167c5c4 35
 packages/gooddata-sdk/pyproject.toml
   s_4ebf5b0db0c571::t_c77847a7912f67 47
 CONTRIBUTING.md
@@ -39,6 +40,15 @@ packages/gooddata-pandas/tox.ini
   s_4ebf5b0db0c571::t_c77847a7912f67 3
 packages/gooddata-sdk/tox.ini
   s_4ebf5b0db0c571::t_c77847a7912f67 3
+packages/gooddata-pandas/src/gooddata_pandas/arrow_convertor.py
+  s_4ebf5b0db0c571::t_1df76f81bf6e38 13,119
+packages/gooddata-pandas/src/gooddata_pandas/utils.py
+  s_4ebf5b0db0c571::t_abc9f6d167c5c4 39-40
+  s_4ebf5b0db0c571::t_1df76f81bf6e38 34-38,41-44,52-53
+packages/gooddata-pandas/tests/dataframe/test_dataframe_for_exec_def_arrow.py
+  s_4ebf5b0db0c571::t_1df76f81bf6e38 109-114
+uv.lock
+  s_4ebf5b0db0c571::t_51f79869ea0294 5-7,1348,1854-1856,2404-2406,2636,2637-2638,2696-2703,2717-2780,2882-2884,3559-3561
 ---
 {
   "schema_version": "authorship/3.0.0",
