@@ -6,7 +6,7 @@ packages/gooddata-eval/src/gooddata_eval/core/agentic/_catalog.py
 packages/gooddata-eval/src/gooddata_eval/core/models.py
   s_1d4010ed2063e2::t_53148dad5cfa7c 9,17
 packages/gooddata-sdk/tests/catalog/test_upsert_outcome.py
-  s_1d4010ed2063e2::t_fee7dc6a635f66 139
+  s_1d4010ed2063e2::t_fee7dc6a635f66 139,163
 packages/gooddata-pipelines/src/gooddata_pipelines/provisioning/entities/users/models/permissions.py
   s_1d4010ed2063e2::t_53148dad5cfa7c 3,19
 packages/gooddata-pipelines/src/gooddata_pipelines/provisioning/generic/config.py
