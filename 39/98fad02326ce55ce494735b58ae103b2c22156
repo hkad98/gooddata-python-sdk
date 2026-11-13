@@ -112,7 +112,7 @@ packages/gooddata-eval/src/gooddata_eval/core/runner.py
 {
   "schema_version": "authorship/3.0.0",
   "git_ai_version": "1.7.5",
-  "base_commit_sha": "96950340ddeb907b105466ae381a81fdb0c7652d",
+  "base_commit_sha": "3998fad02326ce55ce494735b58ae103b2c22156",
   "prompts": {},
   "sessions": {
     "s_1d4010ed2063e2": {
